@@ -4,443 +4,265 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#097969">
-    <title>Khanzab - Compteur de Rakat</title>
-
-    <!-- Manifest PWA Intégré -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIktoYW56YWIiLAogICJzaG9ydF9uYW1lIjogIktoYW56YWIiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgIm9yaWVudGF0aW9uIjogImFueSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA5Nzk2OSIsCiAgInRoZW1lX2NvbG9yIjogIzA5Nzk2OSIKfQ==">
-
+    <title>Khanzab Pro</title>
     <style>
         :root {
             --emerald: #097969;
             --gold: #D4AF37;
             --black: #000000;
-            --white: #ffffff;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: sans-serif; overflow: hidden; background: var(--emerald); }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-            background-color: var(--emerald);
-        }
-
-        /* --- ACCUEIL --- */
+        /* ACCUEIL */
         #home-screen {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            background: var(--emerald);
-            background-image: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.1) 0%, transparent 80%);
-            color: white;
-            padding: 20px;
-            overflow-y: auto;
-            border: 8px solid var(--gold);
-            border-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20l10 10M10 30l10-10L10 10m20 0L20 20' stroke='%23D4AF37' fill='none'/%3E%3C/svg%3E") 30 repeat;
+            display: flex; flex-direction: column; height: 100%; padding: 15px; color: white;
+            background: radial-gradient(circle, var(--emerald) 0%, #043932 100%);
+            border: 10px solid var(--gold); border-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20l10 10M10 30l10-10L10 10m20 0L20 20' stroke='%23D4AF37' fill='none'/%3E%3C/svg%3E") 30 repeat;
         }
 
-        h1 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin: 10px 0;
-            color: var(--gold);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        .header { text-align: center; }
+        .header h1 { color: var(--gold); margin: 5px 0; font-size: 2.2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+
+        /* BOUSSOLE RÉELLE */
+        .qibla-box { position: relative; width: 120px; height: 120px; margin: 10px auto; }
+        #compass { width: 100%; height: 100%; transition: transform 0.2s ease-out; }
+        .qibla-indicator { 
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 20px; background: red; clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
         }
 
-        .qibla-container {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+        .prayer-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .prayer-row { background: rgba(255,255,255,0.1); border-bottom: 2px solid var(--gold); cursor: pointer; }
+        .prayer-row td { padding: 12px; text-align: center; font-size: 1.1rem; }
 
-        #compass {
-            width: 80px;
-            height: 80px;
-            transition: transform 0.1s ease-out;
-        }
-
-        .prayer-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .prayer-row {
-            background: rgba(255, 255, 255, 0.1);
-            border-bottom: 2px solid var(--gold);
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .prayer-row:active {
-            background: rgba(212, 175, 55, 0.3);
-        }
-
-        .prayer-row td {
-            padding: 15px;
-            font-size: 1.2rem;
-            text-align: center;
-        }
-
-        .city-tag {
-            text-align: center;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-bottom: 10px;
-        }
-
-        /* --- ECRAN DE PRIERE (LANDSCAPE) --- */
+        /* ECRAN DE PRIERE - PAYSAGE OPTIMISÉ */
         #prayer-screen {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--black);
-            color: white;
-            z-index: 1000;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--black); color: white; z-index: 1000; flex-direction: row;
         }
 
-        .counter-container {
-            flex: 1;
-            text-align: center;
+        /* INFO : 1/4 de l'écran */
+        #info-zone {
+            width: 25%; height: 100%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; border-right: 2px solid #222;
+            background: #0a0a0a;
         }
+        .rakat-num { font-size: 6rem; font-weight: bold; color: var(--gold); line-height: 1; }
+        .rakat-label { font-size: 1.2rem; opacity: 0.8; }
 
-        .rakat-display {
-            font-size: 10rem;
-            font-weight: bold;
-            line-height: 1;
-        }
-
-        .rakat-label {
-            font-size: 2rem;
-            color: var(--gold);
-        }
-
-        .tachahoud-alert {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 2.5rem;
-            color: #ff3e3e;
-            font-weight: bold;
-            text-transform: uppercase;
-            animation: pulse 1s infinite;
-            display: none;
-        }
-
-        /* --- ZONE TACTILE SECURISEE --- */
+        /* ZONE TACTILE : 3/4 de l'écran */
         #touch-zone {
-            width: 30%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-left: 1px solid rgba(212, 175, 55, 0.2);
+            width: 75%; height: 100%; position: relative;
+            background: linear-gradient(90deg, #000 0%, #050505 100%);
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .finger-indicator {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--gold);
-            border-radius: 50%;
-            position: relative;
-            animation: blink 1.5s infinite;
+        .finger-hint {
+            width: 150px; height: 150px; border: 5px dashed var(--gold);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            animation: pulse 2s infinite; opacity: 0.4;
+        }
+        .finger-hint::after { content: "POSEZ LE FRONT ICI"; font-size: 0.8rem; text-align: center; color: var(--gold); }
+
+        .status-msg {
+            position: absolute; bottom: 20px; width: 100%; text-align: center;
+            font-size: 1.8rem; color: var(--gold); font-weight: bold; text-transform: uppercase;
         }
 
-        .finger-indicator::after {
-            content: '☝️';
-            font-size: 30px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.4; } 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(1); opacity: 0.4; } }
 
-        @keyframes blink {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes pulse {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1); }
-            100% { transform: translateX(-50%) scale(1); }
-        }
-
-        /* --- CONTROLES --- */
-        .btn-exit {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
+        .btn-close { position: absolute; top: 10px; left: 10px; background: #333; color: white; border: none; padding: 10px; z-index: 1001; }
     </style>
 </head>
 <body>
 
-    <!-- Ecran Accueil -->
     <div id="home-screen">
-        <h1>KHANZAB</h1>
-        
-        <div class="qibla-container">
-            <svg id="compass" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#D4AF37" stroke-width="2"/>
-                <polygon points="50,10 60,40 40,40" fill="#D4AF37" id="arrow"/>
-                <text x="50" y="65" text-anchor="middle" fill="white" font-size="8">QIBLA</text>
-            </svg>
-            <div id="location-info" class="city-tag">Chargement localisation...</div>
+        <div class="header">
+            <h1>KHANZAB</h1>
+            <div id="city-name" style="font-size: 0.8rem; opacity: 0.7;">Calcul de la position...</div>
         </div>
 
-        <table class="prayer-table">
-            <tr class="prayer-row" onclick="startPrayer('Fajr', 2)">
-                <td>Fajr</td>
-                <td>2 Rakat</td>
-                <td id="time-fajr">--:--</td>
-            </tr>
-            <tr class="prayer-row" onclick="startPrayer('Dhuhr', 4)">
-                <td>Dhuhr</td>
-                <td>4 Rakat</td>
-                <td id="time-dhuhr">--:--</td>
-            </tr>
-            <tr class="prayer-row" onclick="startPrayer('Asr', 4)">
-                <td>Asr</td>
-                <td>4 Rakat</td>
-                <td id="time-asr">--:--</td>
-            </tr>
-            <tr class="prayer-row" onclick="startPrayer('Maghrib', 3)">
-                <td>Maghrib</td>
-                <td>3 Rakat</td>
-                <td id="time-maghrib">--:--</td>
-            </tr>
-            <tr class="prayer-row" onclick="startPrayer('Isha', 4)">
-                <td>Isha</td>
-                <td>4 Rakat</td>
-                <td id="time-isha">--:--</td>
-            </tr>
-        </table>
+        <div class="qibla-box">
+            <div class="qibla-indicator"></div>
+            <svg id="compass" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="white" stroke-width="1" stroke-dasharray="2,2"/>
+                <line x1="50" y1="5" x2="50" y2="20" stroke="gold" stroke-width="4" />
+                <text x="50" y="60" text-anchor="middle" fill="white" font-size="10">KABA</text>
+            </svg>
+        </div>
 
-        <div style="margin-top: 20px; text-align: center;">
-            <input type="text" id="manual-city" placeholder="Ville (ex: Tunis)" style="padding:8px; border-radius:5px; border:none;">
-            <button onclick="updatePrayerTimesManual()" style="padding:8px; background:var(--gold); border:none; border-radius:5px; font-weight:bold;">OK</button>
+        <table class="prayer-table" id="prayer-list">
+            <!-- Rempli par JS -->
+        </table>
+        
+        <div style="margin-top:auto; padding: 10px; text-align: center;">
+            <small>Posez le téléphone à l'horizontale sur le côté du tapis.</small>
         </div>
     </div>
 
-    <!-- Ecran Prière -->
     <div id="prayer-screen">
-        <button class="btn-exit" onclick="stopPrayer()">Quitter</button>
+        <button class="btn-close" onclick="stopPrayer()">Quitter</button>
         
-        <div class="counter-container">
-            <div class="rakat-label" id="prayer-name-display">PRIÈRE</div>
-            <div class="rakat-display"><span id="current-rakat">1</span>/<span id="total-rakat">4</span></div>
-            <div id="sujud-dots" style="font-size: 2rem;">⚪ ⚪</div>
+        <div id="info-zone">
+            <div class="rakat-label" id="p-name">FAJR</div>
+            <div class="rakat-num"><span id="curr-r">1</span>/<span id="total-r">2</span></div>
+            <div id="sujud-icons" style="font-size: 2rem; margin-top: 20px;">⚪ ⚪</div>
         </div>
 
-        <div id="tachahoud-msg" class="tachahoud-alert">TACHAHOUD</div>
-
         <div id="touch-zone">
-            <div class="finger-indicator"></div>
+            <div class="finger-hint"></div>
+            <div id="msg-alert" class="status-msg"></div>
         </div>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
+        const prayers = [
+            { id: 'Fajr', r: 2 }, { id: 'Dhuhr', r: 4 }, { id: 'Asr', r: 4 }, { id: 'Maghrib', r: 3 }, { id: 'Isha', r: 4 }
+        ];
+
         let state = {
-            isPraying: false,
-            currentPrayer: "",
-            totalRakat: 0,
-            currentRakat: 1,
-            currentSujud: 0,
-            lastTouch: 0,
-            city: "Tunis",
-            method: 5 // Egyptian General Authority of Survey (Tunisie)
+            isPraying: false, currR: 1, totalR: 0, currS: 0, lastT: 0,
+            userLat: 0, userLon: 0, qiblaDir: 0
         };
 
-        // --- AUDIO (Synthèse vocale pour compatibilité offline) ---
-        function playTakbir() {
-            if ('speechSynthesis' in window) {
-                const msg = new SpeechSynthesisUtterance("Allahu Akbar");
-                msg.lang = 'ar-SA';
-                msg.rate = 1.2;
-                window.speechSynthesis.speak(msg);
-            }
+        // --- AUDIO (VOIX HOMME) ---
+        function say(text) {
+            if (!window.speechSynthesis) return;
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'ar-SA';
+            
+            // Chercher une voix d'homme
+            const voices = window.speechSynthesis.getVoices();
+            const maleVoice = voices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('masculine'));
+            if (maleVoice) msg.voice = maleVoice;
+            
+            msg.pitch = 0.8; // Baisser le ton pour faire plus masculin/grave
+            msg.rate = 0.9;
+            window.speechSynthesis.speak(msg);
         }
 
-        // --- GESTION DES PRIÈRES ---
-        function startPrayer(name, rakat) {
+        // --- BOUSSOLE & QIBLA ---
+        function calculateQibla(lat, lon) {
+            const latK = 21.4225 * Math.PI / 180;
+            const lonK = 39.8262 * Math.PI / 180;
+            const phi = lat * Math.PI / 180;
+            const lambda = lon * Math.PI / 180;
+            const y = Math.sin(lonK - lambda);
+            const x = Math.cos(phi) * Math.tan(latK) - Math.sin(phi) * Math.cos(lonK - lambda);
+            return Math.atan2(y, x) * 180 / Math.PI;
+        }
+
+        function initLocation() {
+            navigator.geolocation.getCurrentPosition(pos => {
+                state.userLat = pos.coords.latitude;
+                state.userLon = pos.coords.longitude;
+                state.qiblaDir = calculateQibla(state.userLat, state.userLon);
+                document.getElementById('city-name').innerText = `GPS OK - Qibla: ${Math.round(state.qiblaDir)}°`;
+                fetchTimes(pos.coords.latitude, pos.coords.longitude);
+            });
+
+            window.addEventListener('deviceorientationabsolute', e => {
+                let heading = e.alpha || e.webkitCompassHeading;
+                if (heading) {
+                    const angle = heading - state.qiblaDir;
+                    document.getElementById('compass').style.transform = `rotate(${-angle}deg)`;
+                }
+            });
+        }
+
+        // --- LOGIQUE PRIÈRE ---
+        function startPrayer(id, r) {
             state.isPraying = true;
-            state.currentPrayer = name;
-            state.totalRakat = rakat;
-            state.currentRakat = 1;
-            state.currentSujud = 0;
-
-            document.getElementById('prayer-name-display').innerText = name.toUpperCase();
-            document.getElementById('total-rakat').innerText = rakat;
-            updateDisplay();
-
-            // Passage en plein écran et paysage (si supporté)
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(() => {});
-            }
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(() => {});
-            }
-
+            state.currR = 1; state.totalR = r; state.currS = 0;
+            document.getElementById('p-name').innerText = id;
+            document.getElementById('total-r').innerText = r;
+            document.getElementById('curr-r').innerText = 1;
             document.getElementById('prayer-screen').style.display = 'flex';
+            updateUI();
+            
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(()=>{});
+            }
         }
 
         function stopPrayer() {
             state.isPraying = false;
             document.getElementById('prayer-screen').style.display = 'none';
-            if (document.exitFullscreen) {
-                document.exitFullscreen().catch(() => {});
-            }
         }
 
-        // --- LOGIQUE COMPTEUR (TACTILE) ---
         const touchZone = document.getElementById('touch-zone');
         touchZone.addEventListener('touchstart', (e) => {
             e.preventDefault();
             const now = Date.now();
-            if (now - state.lastTouch < 600) return; // Sécurité anti-parasitage 600ms
+            if (now - state.lastT < 1000) return; // Verrouillage 1s
+            state.lastT = now;
             
-            state.lastTouch = now;
-            handleSujud();
+            handleStep();
         });
 
-        function handleSujud() {
-            playTakbir();
-            state.currentSujud++;
-
-            if (state.currentSujud >= 2) {
-                // Rakat terminée
-                setTimeout(() => {
-                    if (state.currentRakat >= state.totalRakat) {
-                        completePrayer();
-                    } else {
-                        state.currentRakat++;
-                        state.currentSujud = 0;
-                        updateDisplay();
-                    }
-                }, 1000);
-            }
-            updateDisplay();
-        }
-
-        function updateDisplay() {
-            document.getElementById('current-rakat').innerText = state.currentRakat;
+        function handleStep() {
+            state.currS++;
             
-            // Affichage Sujud
-            let dots = "";
-            for(let i=0; i<2; i++) {
-                dots += (i < state.currentSujud) ? "🟢 " : "⚪ ";
-            }
-            document.getElementById('sujud-dots').innerHTML = dots;
-
-            // Logique Tachahoud
-            const tachahoud = document.getElementById('tachahoud-msg');
-            tachahoud.style.display = 'none';
-
-            // Tachahoud intermédiaire (2ème rakat pour prières > 2)
-            if (state.currentRakat === 2 && state.totalRakat > 2 && state.currentSujud === 2) {
-                tachahoud.innerText = "TACHAHOUD (1/2)";
-                tachahoud.style.display = 'block';
-            }
-            // Tachahoud Final
-            if (state.currentRakat === state.totalRakat && state.currentSujud === 2) {
-                tachahoud.innerText = "TACHAHOUD FINAL";
-                tachahoud.style.display = 'block';
-            }
-        }
-
-        function completePrayer() {
-            alert("Prière terminée. Qu'Allah accepte.");
-            stopPrayer();
-        }
-
-        // --- API HORAIRES DE PRIÈRE ---
-        async function fetchPrayerTimes(lat, lon, city = null) {
-            let url = city 
-                ? `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Tunisia&method=${state.method}`
-                : `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=${state.method}`;
-            
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const times = data.data.timings;
-                
-                document.getElementById('time-fajr').innerText = times.Fajr;
-                document.getElementById('time-dhuhr').innerText = times.Dhuhr;
-                document.getElementById('time-asr').innerText = times.Asr;
-                document.getElementById('time-maghrib').innerText = times.Maghrib;
-                document.getElementById('time-isha').innerText = times.Isha;
-                document.getElementById('location-info').innerText = city || "Position GPS active";
-            } catch (error) {
-                console.error("Erreur API", error);
-            }
-        }
-
-        function updatePrayerTimesManual() {
-            const city = document.getElementById('manual-city').value;
-            if (city) fetchPrayerTimes(null, null, city);
-        }
-
-        // --- GEOLOCALISATION & BOUSSOLE ---
-        function initGeo() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => fetchPrayerTimes(pos.coords.latitude, pos.coords.longitude),
-                    () => fetchPrayerTimes(null, null, "Tunis")
-                );
-            }
-            
-            // Boussole (nécessite HTTPS et permission sur certains mobiles)
-            window.addEventListener('deviceorientationabsolute', (e) => {
-                let heading = e.alpha || e.webkitCompassHeading;
-                if (heading) {
-                    // Qibla approximative pour la Tunisie est ~100° (Est-Sud-Est)
-                    // On fait tourner la flèche par rapport au Nord
-                    const qiblaAngle = 100; 
-                    document.getElementById('arrow').style.transformOrigin = "50% 50%";
-                    document.getElementById('compass').style.transform = `rotate(${-heading + qiblaAngle}deg)`;
+            // Logique de fin de Rakat (au 2ème Sujud)
+            if (state.currS === 2) {
+                // Cas 1 : Fin de la prière (Dernière Rakat)
+                if (state.currR === state.totalR) {
+                    say("Allahou Akbar. At-tahiyyatou lillah. Salat Ibrahimia");
+                    document.getElementById('msg-alert').innerText = "TACHAHOUD + SALAT IBRAHIMIA";
+                    setTimeout(() => { alert("Prière terminée"); stopPrayer(); }, 5000);
+                } 
+                // Cas 2 : Deuxième Rakat (Prière > 2) -> Tachahoud Intermédiaire
+                else if (state.currR === 2 && state.totalR > 2) {
+                    say("Allahou Akbar. At-tahiyyatou lillah");
+                    document.getElementById('msg-alert').innerText = "TACHAHOUD";
+                    nextRakat();
                 }
-            }, true);
+                // Cas 3 : Autre Rakat
+                else {
+                    say("Allahou Akbar");
+                    nextRakat();
+                }
+            } else {
+                // Premier Sujud de n'importe quelle rakaat
+                say("Allahou Akbar");
+                updateUI();
+            }
         }
 
-        // Initialisation au chargement
+        function nextRakat() {
+            setTimeout(() => {
+                state.currR++;
+                state.currS = 0;
+                document.getElementById('msg-alert').innerText = "";
+                updateUI();
+            }, 2000);
+        }
+
+        function updateUI() {
+            document.getElementById('curr-r').innerText = state.currR;
+            document.getElementById('sujud-icons').innerText = (state.currS === 1) ? "🟢 ⚪" : "⚪ ⚪";
+        }
+
+        // --- INITIALISATION ---
+        async function fetchTimes(lat, lon) {
+            const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=5`);
+            const data = await res.json();
+            const t = data.data.timings;
+            const table = document.getElementById('prayer-list');
+            table.innerHTML = prayers.map(p => `
+                <tr class="prayer-row" onclick="startPrayer('${p.id}', ${p.r})">
+                    <td>${p.id}</td><td>${p.r} Rakat</td><td>${t[p.id]}</td>
+                </tr>
+            `).join('');
+        }
+
         window.onload = () => {
-            initGeo();
-            // Demander la permission audio au premier clic
-            document.body.addEventListener('click', () => {
-                if (window.speechSynthesis.paused) window.speechSynthesis.resume();
-            }, { once: true });
+            initLocation();
+            // Débloquer l'audio
+            document.body.addEventListener('click', () => { say(""); }, {once: true});
         };
-
-        // Service Worker pour mode Offline
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('data:application/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ID0+IGV2LnJlc3BvbmRXaXRoKGZldGNoKGV2LnJlcXVlc3QpKSk7');
-        }
     </script>
 </body>
 </html>
