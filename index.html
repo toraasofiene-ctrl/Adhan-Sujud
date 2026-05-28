@@ -2,470 +2,444 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Khanzab - Khoushou' & Salat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#097969">
+    <title>Khanzab - Compteur de Rakat</title>
+
+    <!-- Manifest PWA Intégré -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIktoYW56YWIiLAogICJzaG9ydF9uYW1lIjogIktoYW56YWIiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgIm9yaWVudGF0aW9uIjogImFueSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA5Nzk2OSIsCiAgInRoZW1lX2NvbG9yIjogIzA5Nzk2OSIKfQ==">
+
     <style>
         :root {
             --emerald: #097969;
-            --emerald-dark: #05473e;
-            --gold: #d4af37;
-            --gold-light: #f3e5ab;
-            --bg-dark: #000000;
-            --text-light: #f5f5f5;
-            --mosaic-blue: #0056b3;
+            --gold: #D4AF37;
+            --black: #000000;
+            --white: #ffffff;
         }
 
         * {
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body, html {
             margin: 0;
             padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        body {
+            width: 100%;
+            height: 100%;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--emerald-dark);
-            color: var(--text-light);
             overflow: hidden;
-            height: 100vh;
+            background-color: var(--emerald);
         }
 
-        /* --- ÉCRAN D'ACCUEIL (Inspiré de la porte verte et or) --- */
+        /* --- ACCUEIL --- */
         #home-screen {
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            background: radial-gradient(circle, var(--emerald) 0%, var(--emerald-dark) 100%);
-            position: relative;
+            height: 100%;
+            background: var(--emerald);
+            background-image: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.1) 0%, transparent 80%);
+            color: white;
             padding: 20px;
-            transition: opacity 0.5s ease;
+            overflow-y: auto;
+            border: 8px solid var(--gold);
+            border-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20l10 10M10 30l10-10L10 10m20 0L20 20' stroke='%23D4AF37' fill='none'/%3E%3C/svg%3E") 30 repeat;
         }
 
-        /* Arabesque en filigrane SVG de fond */
-        .bg-arabesque {
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 10px 0;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .qibla-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #compass {
+            width: 80px;
+            height: 80px;
+            transition: transform 0.1s ease-out;
+        }
+
+        .prayer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .prayer-row {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid var(--gold);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .prayer-row:active {
+            background: rgba(212, 175, 55, 0.3);
+        }
+
+        .prayer-row td {
+            padding: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .city-tag {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        /* --- ECRAN DE PRIERE (LANDSCAPE) --- */
+        #prayer-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--black);
+            color: white;
+            z-index: 1000;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .counter-container {
+            flex: 1;
+            text-align: center;
+        }
+
+        .rakat-display {
+            font-size: 10rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .rakat-label {
+            font-size: 2rem;
+            color: var(--gold);
+        }
+
+        .tachahoud-alert {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            color: #ff3e3e;
+            font-weight: bold;
+            text-transform: uppercase;
+            animation: pulse 1s infinite;
+            display: none;
+        }
+
+        /* --- ZONE TACTILE SECURISEE --- */
+        #touch-zone {
+            width: 30%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .finger-indicator {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--gold);
+            border-radius: 50%;
+            position: relative;
+            animation: blink 1.5s infinite;
+        }
+
+        .finger-indicator::after {
+            content: '☝️';
+            font-size: 30px;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 90%;
-            height: 90%;
-            opacity: 0.04;
-            pointer-events: none;
-            z-index: 1;
         }
 
-        header {
-            z-index: 2;
-            text-align: center;
-            margin-bottom: 15px;
+        @keyframes blink {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
-        /* Logo Dôme Mosquée SVG */
-        .logo-container {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 5px;
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
         }
 
-        h1 {
-            font-size: 1.6rem;
-            color: var(--gold-light);
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-        }
-
-        /* Zone Qibla & Boussole */
-        #qibla-container {
-            z-index: 2;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--gold);
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            margin-bottom: 15px;
-            display: none; /* Affiché uniquement si boussole détectée */
-        }
-
-        #compass-arrow {
-            width: 40px;
-            height: 40px;
-            transition: transform 0.1s ease-out;
-            margin-top: 5px;
-        }
-
-        /* Cadre Horaires (Arche Dorée) */
-        .timetable-card {
-            z-index: 2;
-            flex: 1;
-            background: rgba(5, 71, 62, 0.8);
-            border: 2px solid var(--gold);
-            border-radius: 25px 25px 0 0;
-            border-bottom: none;
-            padding: 20px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .location-status {
-            font-size: 0.9rem;
-            text-align: center;
-            margin-bottom: 10px;
-            color: var(--gold-light);
-        }
-
-        .fallback-input-zone {
-            display: none;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .fallback-input-zone input {
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid var(--gold);
-            background: #fff;
-            color: #000;
-            width: 60%;
-        }
-
-        .fallback-input-zone button {
-            padding: 8px 12px;
-            background: var(--gold);
-            border: none;
-            color: #000;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .grid-hours {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .prayer-row {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .prayer-row.active {
-            border-color: var(--gold);
-            background: rgba(212, 175, 55, 0.2);
-        }
-
-        .start-btn {
-            background: linear-gradient(135deg, var(--gold) 0%, #b89420 100%);
-            color: #000;
-            border: none;
-            padding: 15px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-top: auto;
-        }
-
-        /* --- ÉCRAN DE PRIÈRE (Inspiré de la porte sombre, bleu et or) --- */
-        #prayer-screen {
-            display: none;
-            height: 100vh;
-            background-color: var(--bg-dark);
-            position: relative;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 30px 20px;
-        }
-
-        /* Cadre mosaïque de l'écran de prière */
-        .mosaic-frame {
+        /* --- CONTROLES --- */
+        .btn-exit {
             position: absolute;
             top: 10px;
             left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 4px double var(--gold);
-            outline: 8px solid var(--mosaic-blue);
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.7;
-        }
-
-        .prayer-header {
-            z-index: 2;
-            text-align: center;
-        }
-
-        .exit-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.4);
-            color: rgba(255,255,255,0.6);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        /* Zone de détection tactile totale */
-        #sujud-touch-zone {
-            z-index: 2;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.02);
-            box-shadow: inset 0 0 20px rgba(0,54,179,0.2);
-        }
-
-        #sujud-counter {
-            font-size: 5rem;
-            font-weight: bold;
-            color: var(--text-light);
-            text-shadow: 0 0 20px var(--mosaic-blue);
-        }
-
-        .sujud-label {
-            font-size: 1.2rem;
-            color: var(--gold-light);
-            margin-top: 10px;
-            letter-spacing: 2px;
-        }
-
-        .instruction-sol {
-            z-index: 2;
-            text-align: center;
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 10px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
 
+    <!-- Ecran Accueil -->
     <div id="home-screen">
-        <svg class="bg-arabesque" viewBox="0 0 100 100">
-            <polygon points="50,5 63,35 95,35 68,55 78,85 50,65 22,85 32,55 5,35 37,35" fill="none" stroke="currentColor" stroke-width="0.5"/>
-            <polygon points="50,15 59,38 83,38 64,52 71,75 50,60 29,75 36,52 17,38 41,38" fill="none" stroke="currentColor" stroke-width="0.3"/>
-            <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" stroke-width="0.5"/>
-        </svg>
-
-        <header>
-            <div class="logo-container">
-                <svg viewBox="0 0 100 100" width="100%" height="100%">
-                    <path d="M50,20 C35,20 30,45 30,60 L70,60 C70,45 65,20 50,20 Z" fill="#f5f5f5"/>
-                    <rect x="25" y="60" width="50" height="15" fill="#e0e0e0" rx="2"/>
-                    <path d="M48,5 C53,5 56,9 55,14 C54,10 50,8 47,9 C44,10 43,14 45,17 C47,19 51,19 53,17 C51,21 45,21 42,17 C39,13 41,7 48,5 Z" fill="#d4af37"/>
-                    <line x1="50" y1="20" x2="50" y2="12" stroke="#d4af37" stroke-width="2"/>
-                </svg>
-            </div>
-            <h1>KHANZAB</h1>
-        </header>
-
-        <div id="qibla-container">
-            <div style="font-size: 0.8rem; color: var(--gold-light);">DIRECTION DE LA MECQUE (QIBLA)</div>
-            <svg id="compass-arrow" viewBox="0 0 24 24">
-                <path d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z" fill="#d4af37"/>
+        <h1>KHANZAB</h1>
+        
+        <div class="qibla-container">
+            <svg id="compass" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                <polygon points="50,10 60,40 40,40" fill="#D4AF37" id="arrow"/>
+                <text x="50" y="65" text-anchor="middle" fill="white" font-size="8">QIBLA</text>
             </svg>
+            <div id="location-info" class="city-tag">Chargement localisation...</div>
         </div>
 
-        <div class="timetable-card">
-            <div id="location-text" class="location-status">Recherche de votre position...</div>
-            
-            <div id="manual-zone" class="fallback-input-zone">
-                <input type="text" id="city-input" placeholder="Ex: Tunis, Sfax, Sousse...">
-                <button onclick="fetchPrayerTimesByCity()">Valider</button>
-            </div>
+        <table class="prayer-table">
+            <tr class="prayer-row" onclick="startPrayer('Fajr', 2)">
+                <td>Fajr</td>
+                <td>2 Rakat</td>
+                <td id="time-fajr">--:--</td>
+            </tr>
+            <tr class="prayer-row" onclick="startPrayer('Dhuhr', 4)">
+                <td>Dhuhr</td>
+                <td>4 Rakat</td>
+                <td id="time-dhuhr">--:--</td>
+            </tr>
+            <tr class="prayer-row" onclick="startPrayer('Asr', 4)">
+                <td>Asr</td>
+                <td>4 Rakat</td>
+                <td id="time-asr">--:--</td>
+            </tr>
+            <tr class="prayer-row" onclick="startPrayer('Maghrib', 3)">
+                <td>Maghrib</td>
+                <td>3 Rakat</td>
+                <td id="time-maghrib">--:--</td>
+            </tr>
+            <tr class="prayer-row" onclick="startPrayer('Isha', 4)">
+                <td>Isha</td>
+                <td>4 Rakat</td>
+                <td id="time-isha">--:--</td>
+            </tr>
+        </table>
 
-            <div class="grid-hours">
-                <div class="prayer-row" id="p-Fajr"><span>Fajr</span><strong id="time-Fajr">--:--</strong></div>
-                <div class="prayer-row" id="p-Dhuhr"><span>Dhuhr</span><strong id="time-Dhuhr">--:--</strong></div>
-                <div class="prayer-row" id="p-Asr"><span>Asr</span><strong id="time-Asr">--:--</strong></div>
-                <div class="prayer-row" id="p-Maghrib"><span>Maghrib</span><strong id="time-Maghrib">--:--</strong></div>
-                <div class="prayer-row" id="p-Isha"><span>Isha</span><strong id="time-Isha">--:--</strong></div>
-            </div>
-
-            <button class="start-btn" onclick="openPrayerScreen()">COMMENCER LA PRIÈRE</button>
+        <div style="margin-top: 20px; text-align: center;">
+            <input type="text" id="manual-city" placeholder="Ville (ex: Tunis)" style="padding:8px; border-radius:5px; border:none;">
+            <button onclick="updatePrayerTimesManual()" style="padding:8px; background:var(--gold); border:none; border-radius:5px; font-weight:bold;">OK</button>
         </div>
     </div>
 
+    <!-- Ecran Prière -->
     <div id="prayer-screen">
-        <div class="mosaic-frame"></div>
-
-        <div class="prayer-header">
-            <button class="exit-btn" onclick="closePrayerScreen()">✕ Quitter la prière</button>
+        <button class="btn-exit" onclick="stopPrayer()">Quitter</button>
+        
+        <div class="counter-container">
+            <div class="rakat-label" id="prayer-name-display">PRIÈRE</div>
+            <div class="rakat-display"><span id="current-rakat">1</span>/<span id="total-rakat">4</span></div>
+            <div id="sujud-dots" style="font-size: 2rem;">⚪ ⚪</div>
         </div>
 
-        <div id="sujud-touch-zone">
-            <div id="sujud-counter">0</div>
-            <div class="sujud-label">SUJUD</div>
-        </div>
+        <div id="tachahoud-msg" class="tachahoud-alert">TACHAHOUD</div>
 
-        <div class="instruction-sol"> Posez le téléphone au sol au niveau du front </div>
+        <div id="touch-zone">
+            <div class="finger-indicator"></div>
+        </div>
     </div>
 
     <script>
-        let sujudCount = 0;
-        let isLocked = false;
-        let qiblaAngle = null;
+        // --- CONFIGURATION ---
+        let state = {
+            isPraying: false,
+            currentPrayer: "",
+            totalRakat: 0,
+            currentRakat: 1,
+            currentSujud: 0,
+            lastTouch: 0,
+            city: "Tunis",
+            method: 5 // Egyptian General Authority of Survey (Tunisie)
+        };
 
-        // Configuration audio via API de synthèse vocale du téléphone
-        function playTakbeer() {
+        // --- AUDIO (Synthèse vocale pour compatibilité offline) ---
+        function playTakbir() {
             if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance("Allahu Akbar");
-                utterance.lang = "ar-SA"; 
-                utterance.rate = 1.1;
-                window.speechSynthesis.speak(utterance);
+                const msg = new SpeechSynthesisUtterance("Allahu Akbar");
+                msg.lang = 'ar-SA';
+                msg.rate = 1.2;
+                window.speechSynthesis.speak(msg);
             }
         }
 
-        /* --- LOGIQUE DU COMPTEUR CORRECTEUR TACTILE CHRONOLOGIQUE --- */
-        const touchZone = document.getElementById('sujud-touch-zone');
+        // --- GESTION DES PRIÈRES ---
+        function startPrayer(name, rakat) {
+            state.isPraying = true;
+            state.currentPrayer = name;
+            state.totalRakat = rakat;
+            state.currentRakat = 1;
+            state.currentSujud = 0;
 
-        touchZone.addEventListener('touchstart', function(e) {
-            e.preventDefault(); // Stoppe les Zooms et parasitages Android
-            
-            // 1. À la milliseconde du contact, si non verrouillé : on incrémente et on joue le son immédiatement
-            if (!isLocked) {
-                sujudCount++;
-                document.getElementById('sujud-counter').innerText = sujudCount;
-                playTakbeer();
-                
-                // 2. On verrouille INSTANTANÉMENT après
-                isLocked = true;
+            document.getElementById('prayer-name-display').innerText = name.toUpperCase();
+            document.getElementById('total-rakat').innerText = rakat;
+            updateDisplay();
+
+            // Passage en plein écran et paysage (si supporté)
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
             }
-        }, { passive: false });
-
-        touchZone.addEventListener('touchend', function(e) {
-            // 3. Tant que tous les doigts n'ont pas quitté la vitre, on reste verrouillé
-            if (e.touches.length === 0) {
-                // 4. Libération totale après 500ms d'absence de contact physique
-                setTimeout(() => {
-                    isLocked = false;
-                }, 500);
-            }
-        });
-
-        /* --- LOGIQUE HORAIRES DE PRIÈRE & GÉOLOCALISATION --- */
-        window.addEventListener('load', () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        document.getElementById('location-text').innerText = "📍 Position synchronisée (Tunisie)";
-                        fetchPrayerTimes(lat, lon);
-                        calculateQibla(lat, lon);
-                    },
-                    (error) => {
-                        handleLocationError();
-                    }
-                );
-            } else {
-                handleLocationError();
-            }
-            initCompass();
-        });
-
-        function handleLocationError() {
-            document.getElementById('location-text').innerText = "⚠️ Localisation refusée. Entrez votre ville :";
-            document.getElementById('manual-zone').style.display = 'block';
-            fetchPrayerTimesByCity("Tunis"); // Charge Tunis par défaut en arrière-plan
-        }
-
-        // Appel API avec les paramètres officiels requis pour la Tunisie
-        function fetchPrayerTimes(lat, lon) {
-            // Méthode 5 = Egyptian General Authority of Survey (Idéale Tunisie)
-            // Madhab 0 = Standard (Maliki/Shafi'i pour l'Asr)
-            const url = `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=5&school=0`;
-            
-            fetch(url)
-                .then(res => res.json())
-                .then(data => updateTimetableUI(data.data.timings))
-                .catch(() => { document.getElementById('location-text').innerText = "Erreur de connexion API"; });
-        }
-
-        function fetchPrayerTimesByCity(city = null) {
-            const cityName = city || document.getElementById('city-input').value || "Tunis";
-            const url = `https://api.aladhan.com/v1/timingsByCity?city=${cityName}&country=Tunisia&method=5&school=0`;
-            
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    updateTimetableUI(data.data.timings);
-                    document.getElementById('location-text').innerText = `📍 Horaires pour : ${cityName}`;
-                });
-        }
-
-        function updateTimetableUI(timings) {
-            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-            prayers.forEach(p => {
-                if(document.getElementById(`time-${p}`)) {
-                    document.getElementById(`time-${p}`).innerText = timings[p];
-                }
-            });
-        }
-
-        /* --- LOGIQUE DE LA BOUSSOLE ET DIRECTION DE LA MECQUE (QIBLA) --- */
-        function calculateQibla(lat, lon) {
-            const mLat = 21.4225; // Latitude Kaaba
-            const mLon = 39.8262; // Longitude Kaaba
-            
-            const dLon = (mLon - lon) * Math.PI / 180;
-            const latRad = lat * Math.PI / 180;
-            const mLatRad = mLat * Math.PI / 180;
-            
-            const y = Math.sin(dLon);
-            const x = Math.cos(latRad) * Math.tan(mLatRad) - Math.sin(latRad) * Math.cos(dLon);
-            let qibla = Math.atan2(y, x) * 180 / Math.PI;
-            qiblaAngle = (qibla + 360) % 360;
-        }
-
-        function initCompass() {
-            // Événement Android standard pour capteur magnétique
-            if ('ondeviceorientationabsolute' in window) {
-                window.addEventListener('deviceorientationabsolute', handleOrientation);
-                document.getElementById('qibla-container').style.display = 'block';
-            } else if ('ondeviceorientation' in window) {
-                window.addEventListener('deviceorientation', handleOrientation);
-                document.getElementById('qibla-container').style.display = 'block';
-            }
-        }
-
-        function handleOrientation(event) {
-            let heading = event.alpha; // Orientation de l'appareil par rapport au Nord
-            if (event.webkitCompassHeading) {
-                heading = event.webkitCompassHeading; // Support iOS
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
             }
 
-            if (heading !== null && qiblaAngle !== null) {
-                // Flèche tourne en opposition pour maintenir l'axe de la Mecque fixe
-                let arrowDirection = qiblaAngle - heading;
-                document.getElementById('compass-arrow').style.transform = `rotate(${arrowDirection}deg)`;
-            }
-        }
-
-        /* --- NAVIGATION INTERNE --- */
-        function openPrayerScreen() {
-            sujudCount = 0;
-            document.getElementById('sujud-counter').innerText = "0";
-            document.getElementById('home-screen').style.display = 'none';
             document.getElementById('prayer-screen').style.display = 'flex';
         }
 
-        function closePrayerScreen() {
+        function stopPrayer() {
+            state.isPraying = false;
             document.getElementById('prayer-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        // --- LOGIQUE COMPTEUR (TACTILE) ---
+        const touchZone = document.getElementById('touch-zone');
+        touchZone.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const now = Date.now();
+            if (now - state.lastTouch < 600) return; // Sécurité anti-parasitage 600ms
+            
+            state.lastTouch = now;
+            handleSujud();
+        });
+
+        function handleSujud() {
+            playTakbir();
+            state.currentSujud++;
+
+            if (state.currentSujud >= 2) {
+                // Rakat terminée
+                setTimeout(() => {
+                    if (state.currentRakat >= state.totalRakat) {
+                        completePrayer();
+                    } else {
+                        state.currentRakat++;
+                        state.currentSujud = 0;
+                        updateDisplay();
+                    }
+                }, 1000);
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('current-rakat').innerText = state.currentRakat;
+            
+            // Affichage Sujud
+            let dots = "";
+            for(let i=0; i<2; i++) {
+                dots += (i < state.currentSujud) ? "🟢 " : "⚪ ";
+            }
+            document.getElementById('sujud-dots').innerHTML = dots;
+
+            // Logique Tachahoud
+            const tachahoud = document.getElementById('tachahoud-msg');
+            tachahoud.style.display = 'none';
+
+            // Tachahoud intermédiaire (2ème rakat pour prières > 2)
+            if (state.currentRakat === 2 && state.totalRakat > 2 && state.currentSujud === 2) {
+                tachahoud.innerText = "TACHAHOUD (1/2)";
+                tachahoud.style.display = 'block';
+            }
+            // Tachahoud Final
+            if (state.currentRakat === state.totalRakat && state.currentSujud === 2) {
+                tachahoud.innerText = "TACHAHOUD FINAL";
+                tachahoud.style.display = 'block';
+            }
+        }
+
+        function completePrayer() {
+            alert("Prière terminée. Qu'Allah accepte.");
+            stopPrayer();
+        }
+
+        // --- API HORAIRES DE PRIÈRE ---
+        async function fetchPrayerTimes(lat, lon, city = null) {
+            let url = city 
+                ? `https://api.aladhan.com/v1/timingsByCity?city=${city}&country=Tunisia&method=${state.method}`
+                : `https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=${state.method}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const times = data.data.timings;
+                
+                document.getElementById('time-fajr').innerText = times.Fajr;
+                document.getElementById('time-dhuhr').innerText = times.Dhuhr;
+                document.getElementById('time-asr').innerText = times.Asr;
+                document.getElementById('time-maghrib').innerText = times.Maghrib;
+                document.getElementById('time-isha').innerText = times.Isha;
+                document.getElementById('location-info').innerText = city || "Position GPS active";
+            } catch (error) {
+                console.error("Erreur API", error);
+            }
+        }
+
+        function updatePrayerTimesManual() {
+            const city = document.getElementById('manual-city').value;
+            if (city) fetchPrayerTimes(null, null, city);
+        }
+
+        // --- GEOLOCALISATION & BOUSSOLE ---
+        function initGeo() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => fetchPrayerTimes(pos.coords.latitude, pos.coords.longitude),
+                    () => fetchPrayerTimes(null, null, "Tunis")
+                );
+            }
+            
+            // Boussole (nécessite HTTPS et permission sur certains mobiles)
+            window.addEventListener('deviceorientationabsolute', (e) => {
+                let heading = e.alpha || e.webkitCompassHeading;
+                if (heading) {
+                    // Qibla approximative pour la Tunisie est ~100° (Est-Sud-Est)
+                    // On fait tourner la flèche par rapport au Nord
+                    const qiblaAngle = 100; 
+                    document.getElementById('arrow').style.transformOrigin = "50% 50%";
+                    document.getElementById('compass').style.transform = `rotate(${-heading + qiblaAngle}deg)`;
+                }
+            }, true);
+        }
+
+        // Initialisation au chargement
+        window.onload = () => {
+            initGeo();
+            // Demander la permission audio au premier clic
+            document.body.addEventListener('click', () => {
+                if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+            }, { once: true });
+        };
+
+        // Service Worker pour mode Offline
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ID0+IGV2LnJlc3BvbmRXaXRoKGZldGNoKGV2LnJlcXVlc3QpKSk7');
         }
     </script>
 </body>
