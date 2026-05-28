@@ -4,269 +4,264 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Khanzab - Compteur</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Khanzab Premium</title>
     <style>
         :root {
             --emerald: #097969;
+            --emerald-dark: #043932;
             --gold: #D4AF37;
             --black: #000000;
+            --white: #ffffff;
+            --burgundy: #5d0e1a;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
-            font-family: 'Segoe UI', sans-serif; overflow: hidden; 
-            background: var(--emerald); 
+            font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden; 
+            background: var(--emerald); color: white;
         }
 
-        /* --- ACCUEIL --- */
+        /* --- ÉCRAN ACCUEIL (Style Mosquée) --- */
         #home-screen {
-            display: flex; flex-direction: column; height: 100%; padding: 10px; color: white;
-            background: radial-gradient(circle, var(--emerald) 0%, #043932 100%);
-            border: 8px solid var(--gold);
+            display: flex; flex-direction: column; height: 100%; padding: 10px;
+            background: linear-gradient(to bottom, #7a1113, var(--burgundy));
+            border: 8px solid var(--gold); overflow-y: auto; text-align: center;
         }
 
-        .header h1 { 
-            text-align: center; color: var(--gold); margin: 10px 0; 
-            font-size: 2.5rem; letter-spacing: 3px;
-        }
+        .lang-bar { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+        .lang-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
+        .lang-btn.active { background: var(--gold); color: black; }
 
-        /* QIBLA SIMPLIFIÉE (Logo Kaaba) */
-        .qibla-container {
-            position: relative; width: 100px; height: 100px; margin: 0 auto 10px;
-            display: flex; justify-content: center; align-items: center;
-        }
-        #kaaba-icon {
-            width: 60px; height: 60px;
-            transition: transform 0.2s ease-out;
-            filter: drop-shadow(0 0 5px var(--gold));
-        }
+        .mosque-header { margin: 10px auto; width: 100px; height: 80px; position: relative; }
+        .dome { width: 60px; height: 40px; background: white; border-radius: 50% 50% 0 0; margin: 0 auto; position: relative; }
+        .dome::after { content: '🌙'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; }
+        .mosque-body { width: 90px; height: 30px; background: #eee; margin: 0 auto; border-radius: 2px; }
 
-        .prayer-table { width: 100%; border-collapse: collapse; }
-        .prayer-row { 
-            background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); 
-            cursor: pointer; height: 60px;
-        }
-        .prayer-row td { text-align: center; font-size: 1.3rem; font-weight: bold; }
-        .prayer-time { color: var(--gold); font-size: 1rem !important; opacity: 0.8; }
+        /* TAPIS DE PRIÈRE (Qibla inversée) */
+        .qibla-area { position: relative; width: 110px; height: 130px; margin: 10px auto; }
+        #prayer-rug { width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.1, 0.8, 0.2, 1); }
 
-        /* --- ECRAN DE PRIERE (CALQUES SUPERPOSÉS) --- */
-        #prayer-screen {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--black); z-index: 1000;
-        }
+        .prayer-table { width: 100%; border-collapse: separate; border-spacing: 0 5px; direction: rtl; }
+        .prayer-row { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); height: 50px; cursor: pointer; }
+        .prayer-row td { text-align: center; font-size: 1.1rem; font-weight: bold; border: 1px solid var(--gold); }
+        .p-time { font-size: 0.8rem !important; color: var(--gold); }
 
-        /* Calque 1 : Affichage (Compteur) */
-        #ui-layer {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 1; pointer-events: none; /* Laisse passer le clic vers le calque tactile */
+        /* --- ÉCRAN IQAMA (Style Porte Verte) --- */
+        #iqama-screen {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: var(--emerald); border: 15px solid var(--gold);
+            border-image: linear-gradient(to right, #bf953f, #fcf6ba, #b38728) 1;
+            flex-direction: column; justify-content: center; align-items: center;
         }
-        .rakat-display { font-size: 15rem; font-weight: bold; color: var(--gold); line-height: 1; }
-        .info-display { font-size: 2rem; color: white; opacity: 0.6; }
-        .sujud-dots { font-size: 3rem; margin-top: 20px; }
+        .arch { position: absolute; top: 0; width: 80%; height: 180px; border: 6px solid var(--gold); border-bottom: none; border-radius: 50% 50% 0 0; opacity: 0.3; }
+        .column { position: absolute; bottom: 0; width: 35px; height: 75%; background: linear-gradient(to right, #b38728, #fcf6ba, #b38728); box-shadow: 2px 0 10px rgba(0,0,0,0.5); }
+        .col-l { left: 10px; } .col-r { right: 10px; }
 
-        /* Calque 2 : Zone Tactile (Transparent, au-dessus) */
-        #touch-layer {
-            position: absolute; width: 100%; height: 100%;
-            z-index: 2; cursor: pointer;
-            display: flex; justify-content: flex-end; align-items: center;
-        }
+        /* --- ÉCRAN DE PRIÈRE (LANDSCAPE NOIR) --- */
+        #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
+        #ui-layer { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; pointer-events: none; }
+        .rakat-display { font-size: 16rem; font-weight: bold; color: var(--gold); line-height: 1; }
+        #liturgy-label { font-size: 2.5rem; color: var(--white); font-weight: bold; margin-top: 10px; text-shadow: 0 0 15px var(--gold); }
 
-        /* Repère visuel clignotant sur le côté droit */
-        .touch-hint {
-            width: 100px; height: 100%;
-            background: linear-gradient(to left, rgba(212, 175, 55, 0.1), transparent);
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink { 0% { opacity: 0.1; } 50% { opacity: 0.4; } 100% { opacity: 0.1; } }
-
-        .btn-exit {
-            position: absolute; top: 20px; left: 20px; z-index: 10;
-            background: rgba(255,255,255,0.1); border: 1px solid var(--gold);
-            color: white; padding: 10px 20px; border-radius: 5px;
-        }
+        /* ZONE TACTILE 100% */
+        #touch-layer { position: absolute; inset: 0; z-index: 10; cursor: pointer; }
+        .btn-back { position: absolute; top: 15px; left: 15px; z-index: 100; background: #222; border: 1px solid var(--gold); color: white; padding: 10px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
     <!-- ACCUEIL -->
     <div id="home-screen">
-        <div class="header"><h1>KHANZAB</h1></div>
+        <div class="lang-bar" id="lang-selector">
+            <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
+            <button class="lang-btn" onclick="setLang('fr')">Français</button>
+            <button class="lang-btn" onclick="setLang('en')">English</button>
+            <button class="lang-btn" onclick="setLang('tr')">Türkçe</button>
+        </div>
+
+        <div class="mosque-header"><div class="dome"></div><div class="mosque-body"></div></div>
+        <h1 style="color: var(--gold); margin: 5px 0; font-size: 1.8rem;">KHANZAB</h1>
         
-        <div class="qibla-container">
-            <!-- SVG simple de la Kaaba -->
-            <svg id="kaaba-icon" viewBox="0 0 100 100">
-                <rect x="20" y="20" width="60" height="60" fill="#222" />
-                <rect x="20" y="35" width="60" height="10" fill="#D4AF37" />
-                <path d="M45 45 L55 45 L55 55 L45 55 Z" fill="#D4AF37" />
+        <div class="qibla-area">
+            <svg id="prayer-rug" viewBox="0 0 100 140">
+                <rect x="10" y="10" width="80" height="120" rx="5" fill="#7b1113" stroke="#D4AF37" stroke-width="2"/>
+                <path d="M50 20 L75 45 L75 110 L25 110 L25 45 Z" fill="#5a0d0e" stroke="#D4AF37" stroke-width="1"/>
+                <path id="mihrab" d="M50 18 L68 40 L32 40 Z" fill="var(--gold)"/> <!-- Pointe Mihrab -->
+                <text x="50" y="85" text-anchor="middle" fill="#D4AF37" font-size="8" font-weight="bold">QIBLA</text>
             </svg>
         </div>
 
-        <table class="prayer-table" id="p-list">
-            <!-- Rempli par JavaScript -->
-        </table>
+        <table class="prayer-table" id="p-list"></table>
+    </div>
+
+    <!-- IQAMA -->
+    <div id="iqama-screen">
+        <div class="arch"></div>
+        <div class="column col-l"></div>
+        <div class="column col-r"></div>
+        <h1 id="iqama-txt" style="color: var(--gold); font-size: 3.5rem; text-shadow: 2px 2px 10px black;">إقامة الصلاة</h1>
+        <button onclick="skipIqama()" style="margin-top:50px; background:var(--gold); border:none; padding:15px 45px; font-weight:bold; border-radius:50px; font-size: 1.3rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">Commencer</button>
     </div>
 
     <!-- PRIÈRE -->
     <div id="prayer-screen">
-        <button class="btn-exit" onclick="stopPrayer()">Retour</button>
-        
-        <!-- CALQUE COMPTEUR -->
+        <button class="btn-back" id="btn-exit" onclick="stopPrayer()">RETOUR</button>
         <div id="ui-layer">
-            <div class="info-display" id="p-name">FAJR</div>
+            <div id="p-name-active" style="font-size: 1.5rem; color: var(--gold); font-weight: bold;">FAJR</div>
             <div class="rakat-display"><span id="curr-r">1</span>/<span id="total-r">2</span></div>
-            <div id="sujud-dots" class="sujud-dots">⚪ ⚪</div>
-            <div id="liturgy-text" style="color:var(--gold); font-size: 1.5rem; margin-top:10px;"></div>
+            <div id="sujud-dots" style="font-size: 4rem;">⚪ ⚪</div>
+            <div id="liturgy-label"></div>
         </div>
-
-        <!-- CALQUE TACTILE SUPERPOSÉ -->
-        <div id="touch-layer">
-            <div class="touch-hint"></div>
-        </div>
+        <div id="touch-layer"></div>
     </div>
 
     <script>
-        const P_DATA = [
-            {id: 'Fajr', r: 2}, {id: 'Dhuhr', r: 4}, {id: 'Asr', r: 4}, {id: 'Maghrib', r: 3}, {id: 'Isha', r: 4}
-        ];
-
-        let state = {
-            isPraying: false, currR: 1, totalR: 0, currS: 0,
-            lastTouch: 0, qiblaAngle: 100
+        const i18n = {
+            ar: { title: "خنزب", names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", back: "رجوع", rakat: "ركعات" },
+            fr: { title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Retour", rakat: "Rakats" },
+            en: { title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Back", rakat: "Rakats" },
+            tr: { title: "KHANZAB", names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", back: "Geri", rakat: "Rekat" }
         };
 
-        // --- SYNTHÈSE VOCALE (VOIX HOMME NATURELLE) ---
-        function speak(text) {
-            if (!window.speechSynthesis) return;
+        let currentLang = 'ar';
+        let prayerTimes = {};
+        let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastTouch: 0, qibla: 0, timer: null };
+
+        // --- AUDIO HUMAIN MASCULIN ---
+        function speak(text, slow = false) {
+            window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'ar-SA';
-            
-            // Sélection d'une voix masculine
             const voices = window.speechSynthesis.getVoices();
-            // On cherche une voix arabe (Saudi ou Egypt) souvent plus naturelle sur Android
-            const maleVoice = voices.find(v => (v.lang.includes('ar') && (v.name.includes('Male') || v.name.includes('Masculine'))));
-            
-            if (maleVoice) msg.voice = maleVoice;
-            msg.pitch = 0.75; // Plus grave pour un son d'homme naturel
-            msg.rate = 0.85;  // Légèrement plus lent pour la solennité
+            const male = voices.find(v => v.lang.includes('ar') && (v.name.includes('Male') || v.name.includes('Masculine')));
+            if (male) msg.voice = male;
+            msg.pitch = 0.7; // Profond et masculin
+            msg.rate = slow ? 0.85 : 0.8;
             window.speechSynthesis.speak(msg);
         }
 
-        // --- GESTION DES TOUCHE (LOGIQUE LITURGIQUE) ---
-        function handleTouch() {
-            const now = Date.now();
-            if (now - state.lastTouch < 1000) return; // Sécurité 1s
-            state.lastTouch = now;
-
-            state.currS++;
-
-            if (state.currS === 1) {
-                // Premier Sujud de n'importe quelle rakaat
-                speak("Allahu Akbar");
-                document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
-                document.getElementById('liturgy-text').innerText = "";
-            } 
-            else if (state.currS === 2) {
-                // Deuxième Sujud de la rakaat
-                document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
-
-                if (state.currR === state.totalR) {
-                    // C'est la dernière Rakaat
-                    speak("Allahu Akbar. Tachahoud. Salat Ibrahimia");
-                    document.getElementById('liturgy-text').innerText = "TACHAHOUD + SALAT IBRAHIMIA";
-                    setTimeout(() => { alert("Prière terminée"); stopPrayer(); }, 5000);
-                } else {
-                    // Rakaat normale (1, 2 ou 3 selon la prière)
-                    speak("Allahu Akbar. Tachahoud");
-                    document.getElementById('liturgy-text').innerText = "TACHAHOUD";
-                    
-                    // Passage automatique à la rakaat suivante après un délai
-                    setTimeout(() => {
-                        state.currR++;
-                        state.currS = 0;
-                        updateUI();
-                    }, 2500);
-                }
-            }
+        // --- LOGIQUE IQAMA ---
+        function startIqama(name, r) {
+            state.totalR = r; state.currentName = name;
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('iqama-screen').style.display = 'flex';
+            
+            const iqamaStr = "الله أكبر ، الله أكبر. أشهد أن لا إله إلا الله. أشهد أن محمدا رسول الله. حي على الصلاة ، حي على الفلاح. قد قامت الصلاة ، قد قامت الصلاة. الله أكبر ، الله أكبر. لا إله إلا الله";
+            speak(iqamaStr, true);
+            state.timer = setTimeout(() => launchPrayer(), 14500);
         }
 
-        // --- UI & NAVIGATION ---
-        function startPrayer(id, r) {
-            state.isPraying = true;
-            state.currR = 1; state.totalR = r; state.currS = 0;
-            
-            document.getElementById('p-name').innerText = id.toUpperCase();
-            document.getElementById('total-r').innerText = r;
-            document.getElementById('prayer-screen').style.display = 'block';
-            updateUI();
+        function skipIqama() { clearTimeout(state.timer); launchPrayer(); }
 
-            // Force Landscape PWA
+        function launchPrayer() {
+            document.getElementById('iqama-screen').style.display = 'none';
+            document.getElementById('prayer-screen').style.display = 'block';
+            state.isPraying = true; state.currR = 1; state.currS = 0;
+            document.getElementById('p-name-active').innerText = state.currentName;
+            document.getElementById('total-r').innerText = state.totalR;
+            updateUI();
+            
             if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
 
-        function stopPrayer() {
-            state.isPraying = false;
-            document.getElementById('prayer-screen').style.display = 'none';
-            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
-        }
+        // --- LOGIQUE TACTILE 2 SUJUD = 1 RAKAT ---
+        document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const now = Date.now();
+            if (now - state.lastTouch < 1200) return;
+            state.lastTouch = now;
+
+            state.currS++;
+            if (state.currS === 1) {
+                speak("استغفر الله");
+                document.getElementById('liturgy-label').innerText = "إستغفار";
+                document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
+            } else if (state.currS === 2) {
+                document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
+                const isLast = (state.currR === state.totalR);
+                const isEven = (state.currR % 2 === 0);
+
+                if (isLast) {
+                    speak("تشهد و الصلاة الإبراهيمية");
+                    document.getElementById('liturgy-label').innerText = "تشهد و الصلاة الإبراهيمية";
+                    setTimeout(() => stopPrayer(), 6000);
+                } else {
+                    speak(isEven ? "تشهد" : "الله أكبر");
+                    document.getElementById('liturgy-label').innerText = isEven ? "تشهد" : "الله أكبر";
+                    setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
+                }
+            }
+        });
 
         function updateUI() {
             document.getElementById('curr-r').innerText = state.currR;
             document.getElementById('sujud-dots').innerHTML = "⚪ ⚪";
-            document.getElementById('liturgy-text').innerText = "";
+            document.getElementById('liturgy-label').innerText = "";
         }
 
-        // --- BOUSSOLE (QIBLA) ---
-        function initQibla() {
-            // Position de la Mecque par rapport à la Tunisie (environ 100-110 degrés Est)
-            // On utilise la géolocalisation pour plus de précision si disponible
-            navigator.geolocation.getCurrentPosition(pos => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                // Calcul simplifié de l'angle de la Qibla
-                const latK = 21.4225, lonK = 39.8262;
-                const y = Math.sin(lonK - lon);
-                const x = Math.cos(lat) * Math.tan(latK) - Math.sin(lat) * Math.cos(lonK - lon);
-                state.qiblaAngle = Math.atan2(y, x) * 180 / Math.PI;
-            });
+        function stopPrayer() {
+            state.isPraying = false; window.speechSynthesis.cancel();
+            document.getElementById('prayer-screen').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'flex';
+            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+        }
 
+        // --- API & BOUSSOLE ---
+        async function fetchTimes() {
+            try {
+                const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
+                const data = await res.json();
+                prayerTimes = data.data.timings;
+                updateStrings();
+            } catch (e) { updateStrings(); }
+        }
+
+        function setLang(l) {
+            currentLang = l;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            updateStrings();
+        }
+
+        function updateStrings() {
+            const t = i18n[currentLang];
+            document.getElementById('txt-title').innerText = t.title;
+            document.getElementById('iqama-txt').innerText = t.iqama;
+            document.getElementById('btn-exit').innerText = t.back;
+            const pMap = [{id:'Fajr',r:2},{id:'Dhuhr',r:4},{id:'Asr',r:4},{id:'Maghrib',r:3},{id:'Isha',r:4}];
+            const list = document.getElementById('p-list');
+            list.innerHTML = pMap.map((p, i) => {
+                const time = prayerTimes[p.id] || "--:--";
+                return `<tr class="prayer-row" onclick="startIqama('${t.names[i]}', ${p.r})">
+                    <td class="p-time">${time}</td><td>${p.r} ${t.rakat}</td><td>${t.names[i]}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function initQibla() {
+            navigator.geolocation.getCurrentPosition(pos => {
+                const latK = 21.4225, lonK = 39.8262;
+                const phi = pos.coords.latitude * Math.PI / 180;
+                const lambda = pos.coords.longitude * Math.PI / 180;
+                const phiK = latK * Math.PI / 180;
+                const lambdaK = lonK * Math.PI / 180;
+                const y = Math.sin(lambdaK - lambda);
+                const x = Math.cos(phi) * Math.tan(phiK) - Math.sin(phi) * Math.cos(lambdaK - lambda);
+                state.qibla = Math.atan2(y, x) * 180 / Math.PI;
+            });
             window.addEventListener('deviceorientationabsolute', e => {
                 let heading = e.alpha || e.webkitCompassHeading;
                 if (heading) {
-                    const rotation = state.qiblaAngle - heading;
-                    document.getElementById('kaaba-icon').style.transform = `rotate(${rotation}deg)`;
+                    const rotation = state.qibla - heading;
+                    document.getElementById('prayer-rug').style.transform = `rotate(${-rotation}deg)`;
                 }
             }, true);
         }
 
-        // --- INITIALISATION ---
-        window.onload = () => {
-            initQibla();
-            
-            // Chargement de la liste des prières
-            const list = document.getElementById('p-list');
-            list.innerHTML = P_DATA.map(p => `
-                <tr class="prayer-row" onclick="startPrayer('${p.id}', ${p.r})">
-                    <td>${p.id}</td>
-                    <td>${p.r} Rakat</td>
-                </tr>
-            `).join('');
-
-            // Ecouteur sur le calque tactile
-            document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                handleTouch();
-            });
-
-            // Débloquer l'audio Chrome
-            document.body.addEventListener('click', () => { 
-                window.speechSynthesis.getVoices(); 
-                speak(""); 
-            }, {once: true});
-        };
+        window.onload = () => { fetchTimes(); initQibla(); document.body.addEventListener('click', () => { speak(""); }, {once: true}); };
     </script>
 </body>
 </html>
