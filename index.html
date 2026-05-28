@@ -20,29 +20,82 @@
             background: var(--emerald); color: white;
         }
 
-        /* --- ACCUEIL --- */
+        /* --- ACCUEIL AMÉLIORÉ --- */
         #home-screen {
             display: flex; flex-direction: column; height: 100%; padding: 10px;
             background: radial-gradient(circle, var(--emerald) 0%, #043932 100%);
             border: 8px solid var(--gold); overflow-y: auto;
+            position: relative;
         }
 
-        .lang-bar { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-        .lang-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--gold); color: white; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
-        .lang-btn.active { background: var(--gold); color: black; }
+        /* Sphère Striée et Sélecteur de Langues */
+        .sphere-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
 
-        .header h1 { text-align: center; color: var(--gold); margin: 5px 0; font-size: 2rem; letter-spacing: 2px; }
+        .striated-sphere {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fcf6ba, #bf953f, #aa771c);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset -2px -2px 6px rgba(0,0,0,0.5);
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 3px, transparent 4px);
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
 
-        /* TAPIS DE PRIÈRE (QIBLA INVERSÉE) */
-        .qibla-area { position: relative; width: 120px; height: 140px; margin: 0 auto 10px; }
-        #prayer-rug { width: 100%; height: 100%; transition: transform 0.3s ease-out; filter: drop-shadow(0 0 10px rgba(0,0,0,0.5)); }
+        .striated-sphere:active { transform: scale(0.9); }
 
-        .prayer-table { width: 100%; border-collapse: collapse; direction: rtl; }
-        .prayer-row { background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); height: 55px; cursor: pointer; }
+        #lang-dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 10px;
+            width: 120px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .lang-option {
+            padding: 10px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            text-align: right;
+            cursor: pointer;
+        }
+
+        .lang-option:last-child { border-bottom: none; }
+        .lang-option:active { color: var(--gold); }
+
+        .header h1 { text-align: center; color: var(--gold); margin: 5px 0; font-size: 2rem; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+
+        /* TAPIS DE PRIÈRE (QIBLA) */
+        .qibla-area {
+            position: relative; width: 140px; height: 160px; margin: 0 auto 10px;
+        }
+        #prayer-rug {
+            width: 100%; height: 100%; transition: transform 0.4s cubic-bezier(0.1, 0.5, 0.1, 1);
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+
+        .prayer-table { width: 100%; border-collapse: collapse; direction: rtl; margin-top: 10px; }
+        .prayer-row { 
+            background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); 
+            height: 55px; cursor: pointer;
+        }
         .prayer-row td { text-align: center; font-size: 1.2rem; font-weight: bold; padding: 0 10px; }
         .p-time { color: var(--gold); font-size: 0.9rem !important; }
 
-        /* --- ÉCRAN IQAMA (STYLE PORTE VERTE) --- */
+        /* --- IQAMA SCREEN --- */
         #iqama-screen {
             display: none; position: fixed; inset: 0; z-index: 2000;
             background: var(--emerald); border: 15px solid var(--gold);
@@ -56,42 +109,48 @@
         /* --- ÉCRAN DE PRIÈRE (LANDSCAPE NOIR) --- */
         #prayer-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--black); z-index: 3000; flex-direction: row; align-items: center;
+            background: var(--black); z-index: 3000;
         }
 
         #ui-layer {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; pointer-events: none;
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1; pointer-events: none;
         }
         .rakat-display { font-size: 14rem; font-weight: bold; color: var(--gold); line-height: 1; }
         #liturgy-label { font-size: 2.5rem; color: var(--white); text-align: center; margin-top: 10px; font-weight: bold; }
 
-        /* ZONE TACTILE 100% */
-        #touch-layer { position: absolute; inset: 0; z-index: 5; cursor: pointer; }
-
-        .btn-back { position: absolute; top: 15px; left: 15px; z-index: 100; background: #222; border: 1px solid var(--gold); color: white; padding: 10px 15px; }
+        #touch-layer { position: absolute; width: 100%; height: 100%; z-index: 5; cursor: pointer; }
+        .btn-back { position: absolute; top: 15px; left: 15px; z-index: 10; background: #222; border: 1px solid var(--gold); color: white; padding: 8px 15px; }
     </style>
 </head>
 <body>
 
     <!-- ACCUEIL -->
     <div id="home-screen">
-        <div class="lang-bar" id="lang-selector">
-            <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
-            <button class="lang-btn" onclick="setLang('fr')">Français</button>
-            <button class="lang-btn" onclick="setLang('en')">English</button>
-            <button class="lang-btn" onclick="setLang('tr')">Türkçe</button>
-            <button class="lang-btn" onclick="setLang('ur')">اردو</button>
+        <!-- Sphère Striée -->
+        <div class="sphere-container">
+            <div class="striated-sphere" onclick="toggleLang()"></div>
+            <div id="lang-dropdown">
+                <div class="lang-option" onclick="setLang('ar')">العربية</div>
+                <div class="lang-option" onclick="setLang('fr')">Français</div>
+                <div class="lang-option" onclick="setLang('tr')">Türkçe</div>
+                <div class="lang-option" onclick="setLang('ur')">اردو</div>
+                <div class="lang-option" onclick="setLang('id')">Bahasa</div>
+                <div class="lang-option" onclick="setLang('bn')">বাংলা</div>
+            </div>
         </div>
 
         <div class="header"><h1 id="txt-title">KHANZAB</h1></div>
         
         <div class="qibla-area">
             <svg id="prayer-rug" viewBox="0 0 100 140">
+                <!-- Tapis (Inversé visuellement pour pointer avec la pointe) -->
                 <rect x="10" y="10" width="80" height="120" rx="5" fill="#7b1113" stroke="#D4AF37" stroke-width="2"/>
-                <path d="M50 15 L75 40 L75 110 L25 110 L25 40 Z" fill="#5a0d0e" stroke="#D4AF37" stroke-width="1"/>
-                <!-- Mihrab (Pointe Jaune vers la Mecque) -->
+                <path d="M50 15 L75 40 L75 115 L25 115 L25 40 Z" fill="#5a0d0e" stroke="#D4AF37" stroke-width="1"/>
+                <!-- Mihrab (La pointe jaune qui doit indiquer la Mecque) -->
                 <path d="M50 20 L65 38 L35 38 Z" fill="#D4AF37"/>
-                <text x="50" y="80" text-anchor="middle" fill="#D4AF37" font-size="8" font-weight="bold">QIBLA</text>
+                <text x="50" y="85" text-anchor="middle" fill="#D4AF37" font-size="8" font-weight="bold">QIBLA</text>
             </svg>
         </div>
 
@@ -123,14 +182,27 @@
         const i18n = {
             ar: { title: "خنزب", names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", back: "رجوع", rakat: "ركعات" },
             fr: { title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Retour", rakat: "Rakats" },
-            en: { title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Back", rakat: "Rakats" },
             tr: { title: "KHANZAB", names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", back: "Geri", rakat: "Rekat" },
-            ur: { title: "خنزب", names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", back: "واپس", rakat: "رکعت" }
+            ur: { title: "خنزب", names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", back: "واپس", rakat: "رکعت" },
+            id: { title: "KHANZAB", names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", back: "Kembali", rakat: "Rakaat" },
+            bn: { title: "খানজাব", names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", back: "ফিরে যান", rakat: "রাকাত" }
         };
 
         let currentLang = 'ar';
         let prayerTimes = {};
         let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, timer: null };
+
+        // --- GESTION LANGUES (SPHERE) ---
+        function toggleLang() {
+            const dropdown = document.getElementById('lang-dropdown');
+            dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.getElementById('lang-dropdown').style.display = 'none';
+            updateUIStrings();
+        }
 
         // --- AUDIO HUMAIN MASCULIN ---
         function speak(text, slow = false) {
@@ -140,19 +212,17 @@
             const voices = window.speechSynthesis.getVoices();
             const male = voices.find(v => v.lang.includes('ar') && (v.name.includes('Male') || v.name.includes('Masculine')));
             if (male) msg.voice = male;
-            msg.pitch = 0.7; // Profond
+            msg.pitch = 0.7; 
             msg.rate = slow ? 0.85 : 0.8;
             window.speechSynthesis.speak(msg);
         }
 
-        // --- IQAMA ---
+        // --- LOGIQUE IQAMA ---
         function startIqama(name, r) {
             state.totalR = r; state.currentName = name;
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('iqama-screen').style.display = 'flex';
-            
-            const iqamaStr = "الله أكبر ، الله أكبر. أشهد أن لا إله إلا الله. أشهد أن محمدا رسول الله. حي على الصلاة ، حي على الفلاح. قد قامت الصلاة ، قد قامت الصلاة. الله أكبر ، الله أكبر. لا إله إلا الله";
-            speak(iqamaStr, true);
+            speak("الله أكبر ، الله أكبر. أشهد أن لا إله إلا الله. أشهد أن محمدا رسول الله. حي على الصلاة ، حي على الفلاح. قد قامت الصلاة ، قد قامت الصلاة. الله أكبر ، الله أكبر. لا إله إلا الله", true);
             state.timer = setTimeout(() => launchPrayer(), 14500);
         }
 
@@ -165,7 +235,6 @@
             document.getElementById('p-name-active').innerText = state.currentName;
             document.getElementById('total-r').innerText = state.totalR;
             updateUI();
-
             if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
@@ -176,30 +245,22 @@
             const now = Date.now();
             if (now - state.lastTouch < 1200) return;
             state.lastTouch = now;
-
             state.currS++;
-
             if (state.currS === 1) {
                 speak("استغفر الله");
                 document.getElementById('liturgy-label').innerText = "إستغفار";
                 document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
             } else if (state.currS === 2) {
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
-                const isLast = (state.currR === state.totalR);
+                const isFinal = (state.currR === state.totalR);
                 const isEven = (state.currR % 2 === 0);
-
-                if (isLast) {
+                if (isFinal) {
                     speak("تشهد و الصلاة الإبراهيمية");
                     document.getElementById('liturgy-label').innerText = "تشهد و الصلاة الإبراهيمية";
                     setTimeout(() => stopPrayer(), 6000);
                 } else {
-                    if (isEven) {
-                        speak("تشهد");
-                        document.getElementById('liturgy-label').innerText = "تشهد";
-                    } else {
-                        speak("الله أكبر");
-                        document.getElementById('liturgy-label').innerText = "الله أكبر";
-                    }
+                    speak(isEven ? "تشهد" : "الله أكبر");
+                    document.getElementById('liturgy-label').innerText = isEven ? "تشهد" : "الله أكبر";
                     setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
                 }
             }
@@ -218,7 +279,7 @@
             if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
         }
 
-        // --- API & UI ---
+        // --- API & BOUSSOLE ---
         async function fetchTimes() {
             try {
                 const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
@@ -228,19 +289,11 @@
             } catch (e) { updateUIStrings(); }
         }
 
-        function setLang(lang) {
-            currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            updateUIStrings();
-        }
-
         function updateUIStrings() {
             const t = i18n[currentLang];
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('btn-exit').innerText = t.back;
             document.getElementById('iqama-title').innerText = t.iqama;
-            
             const pMap = [{id:'Fajr',r:2},{id:'Dhuhr',r:4},{id:'Asr',r:4},{id:'Maghrib',r:3},{id:'Isha',r:4}];
             const list = document.getElementById('p-list');
             list.innerHTML = pMap.map((p, i) => {
@@ -266,6 +319,7 @@
             window.addEventListener('deviceorientationabsolute', e => {
                 let heading = e.alpha || e.webkitCompassHeading;
                 if (heading) {
+                    // Correction de l'inversion : on utilise la pointe du tapis (Mihrab)
                     const rotation = state.qiblaAngle - heading;
                     document.getElementById('prayer-rug').style.transform = `rotate(${-rotation}deg)`;
                 }
