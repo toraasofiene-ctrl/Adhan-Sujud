@@ -20,7 +20,7 @@
             background: var(--emerald); color: white;
         }
 
-        /* --- ACCUEIL AMÉLIORÉ --- */
+        /* --- ACCUEIL --- */
         #home-screen {
             display: flex; flex-direction: column; height: 100%; padding: 10px;
             background: radial-gradient(circle, var(--emerald) 0%, #043932 100%);
@@ -128,7 +128,6 @@
 
     <!-- ACCUEIL -->
     <div id="home-screen">
-        <!-- Sphère Striée -->
         <div class="sphere-container">
             <div class="striated-sphere" onclick="toggleLang()"></div>
             <div id="lang-dropdown">
@@ -145,10 +144,9 @@
         
         <div class="qibla-area">
             <svg id="prayer-rug" viewBox="0 0 100 140">
-                <!-- Tapis (Inversé visuellement pour pointer avec la pointe) -->
                 <rect x="10" y="10" width="80" height="120" rx="5" fill="#7b1113" stroke="#D4AF37" stroke-width="2"/>
                 <path d="M50 15 L75 40 L75 115 L25 115 L25 40 Z" fill="#5a0d0e" stroke="#D4AF37" stroke-width="1"/>
-                <!-- Mihrab (La pointe jaune qui doit indiquer la Mecque) -->
+                <!-- Mihrab (La pointe jaune) -->
                 <path d="M50 20 L65 38 L35 38 Z" fill="#D4AF37"/>
                 <text x="50" y="85" text-anchor="middle" fill="#D4AF37" font-size="8" font-weight="bold">QIBLA</text>
             </svg>
@@ -192,7 +190,6 @@
         let prayerTimes = {};
         let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, timer: null };
 
-        // --- GESTION LANGUES (SPHERE) ---
         function toggleLang() {
             const dropdown = document.getElementById('lang-dropdown');
             dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
@@ -204,7 +201,6 @@
             updateUIStrings();
         }
 
-        // --- AUDIO HUMAIN MASCULIN ---
         function speak(text, slow = false) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
@@ -217,7 +213,6 @@
             window.speechSynthesis.speak(msg);
         }
 
-        // --- LOGIQUE IQAMA ---
         function startIqama(name, r) {
             state.totalR = r; state.currentName = name;
             document.getElementById('home-screen').style.display = 'none';
@@ -239,7 +234,6 @@
             if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
 
-        // --- LOGIQUE TACTILE 2 SUJUD = 1 RAKAT ---
         document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
             e.preventDefault();
             const now = Date.now();
@@ -279,7 +273,6 @@
             if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
         }
 
-        // --- API & BOUSSOLE ---
         async function fetchTimes() {
             try {
                 const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
@@ -319,9 +312,9 @@
             window.addEventListener('deviceorientationabsolute', e => {
                 let heading = e.alpha || e.webkitCompassHeading;
                 if (heading) {
-                    // Correction de l'inversion : on utilise la pointe du tapis (Mihrab)
+                    // INVERSION APPLIQUÉE ICI (+180)
                     const rotation = state.qiblaAngle - heading;
-                    document.getElementById('prayer-rug').style.transform = `rotate(${-rotation}deg)`;
+                    document.getElementById('prayer-rug').style.transform = `rotate(${-rotation + 180}deg)`;
                 }
             }, true);
         }
