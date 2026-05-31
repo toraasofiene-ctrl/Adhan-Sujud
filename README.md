@@ -1,52 +1,41 @@
-# 🕋 Khanzab PWA (خنزب)
+# Khanzab Pro 🕌
 
-**Khanzab** est une Application Web Progressive (PWA) minimaliste et intelligente, conçue pour aider les musulmans à suivre le rythme de leurs prières quotidiennes avec sérénité et concentration. L'application se distingue par son interface épurée, optimisée pour une utilisation sur support ou tapis en mode paysage.
-
----
-
-## 🌍 Langues Disponibles / اللغات المتوفرة
-L'application s'adapte instantanément et réécrit l'intégralité de ses interfaces dans la langue sélectionnée :
-* **العربية** (Arabe)
-* **Français** (French)
-* **Türkçe** (Turc)
-* **اردو** (Urdu)
-* **Bahasa** (Indonésien)
-* **বাংলা** (Bengali)
+**Khanzab Pro** est une application web moderne (Progressive Web App) conçue pour accompagner les musulmans dans la précision de leurs prières quotidiennes. Alliant technologie et spiritualité, elle intègre un calculateur d'horaires automatique, une boussole de Qibla dynamique et un assistant visuel et sonore unique pour le suivi des Rakats en temps réel.
 
 ---
 
-## ✨ Fonctionnalités Clés / المميزات الرئيسية
+## ✨ Fonctionnalités Principales
 
-* **🕒 Horaires automatiques (Tunis) :** Synchronisation en temps réel avec l'API AlAdhan pour afficher les heures exactes des 5 prières à Tunis.
-* **🕌 Alertes Adhan Intelligentes :** L'Adhan retentit automatiquement à l'heure exacte de la prière. Contrairement aux applications classiques, il ne joue **qu'une seule fois** (pas de boucle infinie). Un simple clic sur l'écran coupe instantanément le son.
-* **🔊 Contrôle du Volume Individuel :** Un bouton 🔊/🔇 à côté de chaque prière permet d'activer ou de désactiver l'Adhan automatique pour cette prière. Les choix sont sauvegardés dans la mémoire du téléphone (`localStorage`).
-* **🟢 Suivi Tactile des Sujoud (Voix Humaine) :** Pendant la prière, un système tactile ultra-sécurisé gère l'enchaînement liturgique au toucher de l'écran (Sujoud 1, Isteghfar, Sujoud 2, Takbir, et les versions courtes/longues du Tachahoud en audio de voix humaine).
-* **🧭 Boussole de la Qibla :** Un tapis de prière virtuel pivote mathématiquement en temps réel pour indiquer la direction exacte de la Kaaba en fonction de la position du téléphone.
-
----
-
-## 📲 Comment l'installer sur votre téléphone ?
-
-Khanzab étant une **PWA (Progressive Web App)**, elle ne nécessite pas de téléchargement depuis le Play Store ou l'App Store. Elle s'installe directement depuis votre navigateur (Chrome conseillé sur Xiaomi/Android, Safari sur iOS) :
-
-1. Ouvrez ce lien sur votre téléphone : **[https://toraasofiene-ctrl.github.io/khanzab/](https://toraasofiene-ctrl.github.io/khanzab/)**
-2. Cliquez sur les **trois petits points** (options) de votre navigateur.
-3. Sélectionnez **"Installer l'application"** ou **"Ajouter à l'écran d'accueil"**.
-4. L'icône de l'application apparaît sur votre téléphone. Vous pouvez maintenant l'utiliser en plein écran, même sans les barres du navigateur !
+*   **🌍 Horaires de Prière Automatiques** : Calcul précis des horaires basé sur la position géographique exacte de l'utilisateur (via GPS ou géolocalisation IP en double sécurité).
+*   **🧭 Boussole de la Qibla Intelligente** : Un tapis de prière virtuel qui pivote dynamiquement en s'alignant sur les capteurs du smartphone pour indiquer la direction exacte de la Kaaba.
+*   **🎙️ Alertes Adhan & Iqama** : Notifications sonores pour chaque prière avec possibilité d'activer ou de couper le son individuellement (mode muet).
+*   **📿 Assistant de Suivi de Prière (Mode Paysage)** : 
+    *   Un compteur géant pour suivre les Rakats en cours.
+    *   Des indicateurs visuels (points lumineux) pour valider les deux prosternations (Sujud).
+    *   Générateur de signaux sonores et textuels intégrés pour guider la récitation à chaque étape (Istighfar, Takbir, Tachahoud).
+*   **🌐 Support Multilingue Intégral** : Interface entièrement traduite et adaptable en un clic (Allemand/Arabe, Français, Turc, Urdu, Bahasa, Bengali).
 
 ---
 
-## 🛠️ Technologies utilisées
+## 🛠️ Technologies Utilisées
 
-* **HTML5 / CSS3 :** Design responsive avec thème Émeraude et Or, transitions fluides pour la boussole.
-* **JavaScript (Vanilla) :** Logique d'enchaînement audio, gestion du stockage local et calculs géographiques de la Qibla.
-* **API AlAdhan :** Récupération dynamique des horaires de prière.
+*   **HTML5 & CSS3** : Interface adaptative optimisée pour le plein écran mobile (mode portrait pour l'accueil, paysage pour le suivi).
+*   **JavaScript (Vanilla JS)** : Logique interne fluide sans dépendance externe lourde.
+*   **API Aladhan** : Récupération des données astronomiques de prière en temps réel.
+*   **Device Orientation API** : Exploitation des capteurs gyroscopiques pour la rotation de la Qibla.
+
+---
+
+## 📲 Installation et Utilisation
+
+### Mode Web / PWA
+1. Ouvrez le lien de l'application sur votre navigateur mobile (Chrome ou Safari).
+2. Ajoutez l'application à l'écran d'accueil pour l'utiliser en mode plein écran comme une application native.
+
+### Mode APK (Android)
+Ce projet est entièrement compatible avec les convertisseurs comme **PWABuilder** pour générer un fichier `.apk` installable directement sur n'importe quel smartphone Android, offrant une meilleure stabilité des alertes sonores en arrière-plan.
 
 ---
 
 ## 📜 Licence
-
-Ce projet est distribué **gratuitement**. Les fichiers audio et le code ont été stabilisés pour offrir une expérience fluide, rapide et respectueuse de la tranquillité spirituelle de l'utilisateur.
-
----
-*Développé avec soin pour la communauté.*
+Ce projet est libre de droits. Vous pouvez l'utiliser, le modifier et le partager pour le bien de la communauté.
