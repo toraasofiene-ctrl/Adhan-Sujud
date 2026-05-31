@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -144,7 +143,6 @@
 </head>
 <body>
 
-    <!-- ACCUEIL -->
     <div id="home-screen">
         <div class="sphere-container">
             <div class="striated-sphere" onclick="toggleLang()"></div>
@@ -172,23 +170,20 @@
         <table class="prayer-table" id="p-list"></table>
     </div>
 
-    <!-- IQAMA -->
     <div id="iqama-screen">
         <div class="arch-decoration"></div>
         <div class="column col-l"></div>
         <div class="column col-r"></div>
         <h1 id="iqama-title" style="color: var(--gold); font-size: 3.5rem;">إقامة الصلاة</h1>
-        <button onclick="skipIqama()" style="margin-top:40px; background:var(--gold); border:none; padding:15px 40px; font-weight:bold; border-radius:50px; font-size: 1.2rem; cursor: pointer; color: black;">Commencer</button>
+        <button id="iqama-btn-start" onclick="skipIqama()" style="margin-top:40px; background:var(--gold); border:none; padding:15px 40px; font-weight:bold; border-radius:50px; font-size: 1.2rem; cursor: pointer; color: black;">Commencer</button>
     </div>
 
-    <!-- ECRAN ALERTE ADHAN -->
     <div id="adhan-screen" onclick="stopAdhanAlert()">
         <div class="adhan-pulse">🕌</div>
         <h1 id="adhan-display-title" style="color: var(--gold); font-size: 3rem; margin: 0;">أذان</h1>
-        <p style="color: white; font-size: 1.2rem; margin-top: 15px;">Appuyez n'importe où pour arrêter</p>
+        <p id="adhan-display-sub" style="color: white; font-size: 1.2rem; margin-top: 15px;">Appuyez n'importe où pour arrêter</p>
     </div>
 
-    <!-- PRIÈRE -->
     <div id="prayer-screen">
         <button class="btn-back" id="btn-exit" onclick="stopPrayer()">Retour</button>
         <div id="ui-layer">
@@ -202,24 +197,46 @@
 
     <script>
         const i18n = {
-            ar: { title: "خنزب", names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", back: "رجوع", rakat: "ركعات" },
-            fr: { title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Retour", rakat: "Rakats" },
-            tr: { title: "KHANZAB", names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", back: "Geri", rakat: "Rekat" },
-            ur: { title: "خنزب", names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", back: "واپس", rakat: "رکعت" },
-            id: { title: "KHANZAB", names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", back: "Kembali", rakat: "Rakaat" },
-            bn: { title: "খানজাব", names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", back: "ফিরে যান", rakat: "রাকাত" }
+            ar: { 
+                title: "خنزب", names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", back: "رجوع", rakat: "ركعات",
+                btnStart: "بدء", adhanTitle: "أذان", adhanSub: "اضغط في أي مكان للإيقاف",
+                litIsteghfar: "رَبِّ اغْفِرْ لِي", litTakbir: "اللهُ أَكْبَر", litTachahoud: "التَّشَهُّدّ", litTachahoudFinal: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة"
+            },
+            fr: { 
+                title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Retour", rakat: "Rakats",
+                btnStart: "Commencer", adhanTitle: "Adhan", adhanSub: "Appuyez n'importe où pour arrêter",
+                litIsteghfar: "Rabbi ghfir li", litTakbir: "Allahu Akbar", litTachahoud: "Tachahoud", litTachahoudFinal: "Tachahoud & Salât Ibrahimiyya"
+            },
+            tr: { 
+                title: "KHANZAB", names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", back: "Geri", rakat: "Rekat",
+                btnStart: "Başla", adhanTitle: "Ezan", adhanSub: "Durdurmak için herhangi bir yere dokunun",
+                litIsteghfar: "Rabbim beni bağışla", litTakbir: "Allahu Ekber", litTachahoud: "Teşehhüd", litTachahoudFinal: "Son Teşehhüd & Salli-Barik"
+            },
+            ur: { 
+                title: "خنزب", names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", back: "واپس", rakat: "رکعت",
+                btnStart: "شروع کریں", adhanTitle: "اذان", adhanSub: "روکنے کے لیے کہیں भी ٹچ کریں",
+                litIsteghfar: "رب اغفر لي", litTakbir: "اللہ اکبر", litTachahoud: "تشہد", litTachahoudFinal: "تشہد اور درود ابراہیمی"
+            },
+            id: { 
+                title: "KHANZAB", names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", back: "Kembali", rakat: "Rakaat",
+                btnStart: "Mulai", adhanTitle: "Adzan", adhanSub: "Ketuk di mana saja untuk berhenti",
+                litIsteghfar: "Robbighfirlii", litTakbir: "Allahu Akbar", litTachahoud: "Tahiyyat awal", litTachahoudFinal: "Tahiyyat Akhir & Shalawat"
+            },
+            bn: { 
+                title: "খানজাব", names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", back: "ফিরে যান", rakat: "রাকাত",
+                btnStart: "শুরু করুন", adhanTitle: "আযান", adhanSub: "বন্ধ করতে যেকোনো জায়গায় স্পর্শ করুন",
+                litIsteghfar: "রব্বিগফিরলি", litTakbir: "আল্লাহু আকবার", litTachahoud: "তাশাহহুদ", litTachahoudFinal: "তাশাহহুদ ও দুরুদে ইব্রাহিম"
+            }
         };
 
         let currentLang = 'ar';
-        let prayerTimes = {};
-        let state = { isPraying: false, isAdhanPlaying: false, lastAdhanTriggered: "", currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0 };
+        let prayerTimes = null; // Vaut null au départ tant que l'API n'a pas répondu
+        let state = { isPraying: false, isAdhanPlaying: false, lastAdhanTriggered: "", currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, currentPrayerIdx: 0 };
 
-        // --- CHARGEMENT DES PRÉFÉRENCES DE VOLUME DEPUIS LE TÉLÉPHONE ---
         let adhanSettings = JSON.parse(localStorage.getItem('khanzab_adhan_settings')) || {
             Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true
         };
 
-        // --- GESTION AUDIO RESTAURÉE ET SÉCURISÉE ---
         const sounds = {
             iqama: new Audio('iqama.mp3'),
             isteghfar: new Audio('isteghfar.mp3'),
@@ -232,7 +249,7 @@
         function playSound(key) {
             if (sounds[key]) {
                 sounds[key].currentTime = 0;
-                sounds[key].play().catch(e => console.log("Audio bloqué ou non chargé", e));
+                sounds[key].play().catch(e => console.log("Audio bloqué", e));
             }
         }
 
@@ -247,25 +264,23 @@
             updateUIStrings();
         }
 
-        // --- GESTION DU VOLUME PAR PRIÈRE ---
         function toggleAdhanVolume(pName, event) {
-            event.stopPropagation(); // Évite de lancer l'iqama en cliquant sur le volume
+            event.stopPropagation();
             adhanSettings[pName] = !adhanSettings[pName];
             localStorage.setItem('khanzab_adhan_settings', JSON.stringify(adhanSettings));
             updateUIStrings();
         }
 
-        // --- LOGIQUE IQAMA ---
-        function startIqama(name, r) {
-            state.totalR = r; state.currentName = name;
+        function startIqama(name, r, idx) {
+            state.totalR = r; 
+            state.currentPrayerIdx = idx;
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('iqama-screen').style.display = 'flex';
             
+            updateUIStrings();
             playSound('iqama');
             
-            sounds.iqama.onended = () => {
-                launchPrayer();
-            };
+            sounds.iqama.onended = () => { launchPrayer(); };
         }
 
         function skipIqama() { 
@@ -278,21 +293,20 @@
             document.getElementById('iqama-screen').style.display = 'none';
             document.getElementById('prayer-screen').style.display = 'flex';
             state.isPraying = true; state.currR = 1; state.currS = 0;
-            document.getElementById('p-name-active').innerText = state.currentName;
+            
+            document.getElementById('p-name-active').innerText = i18n[currentLang].names[state.currentPrayerIdx];
             document.getElementById('total-r').innerText = state.totalR;
             updateUI();
+            
             if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
             if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
 
-        // --- SURVEILLANCE HORAIRE DE L'ADHAN (1 SEULE FOIS) ---
         function checkPrayerTime() {
-            if (state.isPraying || state.isAdhanPlaying) return;
+            if (state.isPraying || state.isAdhanPlaying || !prayerTimes) return;
 
             const now = new Date();
-            const currentHours = String(now.getHours()).padStart(2, '0');
-            const currentMinutes = String(now.getMinutes()).padStart(2, '0');
-            const currentTimeString = `${currentHours}:${currentMinutes}`;
+            const currentTimeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
             const pMap = [
                 { id: 'Fajr', key: 'Fajr' },
@@ -305,33 +319,27 @@
             pMap.forEach((p, index) => {
                 let pTime = prayerTimes[p.id];
                 if (pTime) {
-                    // Nettoyage format au cas où l'API renvoie des caractères en trop
                     pTime = pTime.split(' ')[0]; 
-                    
                     if (currentTimeString === pTime && state.lastAdhanTriggered !== currentTimeString) {
                         state.lastAdhanTriggered = currentTimeString;
-                        
-                        // Si l'utilisateur a activé l'Adhan pour cette prière
                         if (adhanSettings[p.key]) {
-                            triggerAdhanAlert(i18n[currentLang].names[index]);
+                            triggerAdhanAlert(index);
                         }
                     }
                 }
             });
         }
 
-        function triggerAdhanAlert(prayerNameTranslated) {
+        function triggerAdhanAlert(prayerIndex) {
             state.isAdhanPlaying = true;
-            document.getElementById('adhan-display-title').innerText = `${i18n[currentLang].iqama === 'إقامة الصلاة' ? 'أذان' : 'Adhan'} ${prayerNameTranslated}`;
+            const t = i18n[currentLang];
+            document.getElementById('adhan-display-title').innerText = `${t.adhanTitle} - ${t.names[prayerIndex]}`;
+            document.getElementById('adhan-display-sub').innerText = t.adhanSub;
             document.getElementById('adhan-screen').style.display = 'flex';
             
-            sounds.adhan.loop = false; // Joue UNE seule fois
+            sounds.adhan.loop = false;
             playSound('adhan');
-
-            // Si l'adhan se termine tout seul, on ferme l'écran d'alerte
-            sounds.adhan.onended = () => {
-                stopAdhanAlert();
-            };
+            sounds.adhan.onended = () => { stopAdhanAlert(); };
         }
 
         function stopAdhanAlert() {
@@ -341,62 +349,40 @@
             document.getElementById('adhan-screen').style.display = 'none';
         }
 
-        // --- ENTIÈREMENT RESTAURÉ : LOGIQUE TACTILE DE SUIVI AUDIO BLINDÉE ---
         document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
             e.preventDefault();
             const now = Date.now();
-            
-            // Sécurité anti-parasitage stricte de 1.2 seconde
             if (now - state.lastTouch < 1200) return;
             state.lastTouch = now;
             
-            // Nettoyage des comportements de fin précédents pour éviter les conflits
             sounds.tachahoud.onended = null;
             sounds.tachahoud2.onended = null;
 
             state.currS++;
+            const t = i18n[currentLang];
             
             if (state.currS === 1) {
-                // APRÈS PREMIER SUJOURD DE CHAQUE RAKAAT -> ISTEGHFAR
                 playSound('isteghfar');
-                document.getElementById('liturgy-label').innerText = "رَبِّ اغْفِرْ Lِي";
+                document.getElementById('liturgy-label').innerText = t.litIsteghfar;
                 document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
-                
             } else if (state.currS === 2) {
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
-                
                 const isFinal = (state.currR === state.totalR);
                 const isEven = (state.currR % 2 === 0);
                 
                 if (isFinal) {
-                    // RAKAAT FINALE -> TACHAHOUD-2 (Voix humaine complète)
                     playSound('tachahoud2');
-                    document.getElementById('liturgy-label').innerText = "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة";
-                    
-                    sounds.tachahoud2.onended = () => {
-                        stopPrayer();
-                    };
+                    document.getElementById('liturgy-label').innerText = t.litTachahoudFinal;
+                    sounds.tachahoud2.onended = () => { stopPrayer(); };
                 } else {
                     if (isEven) {
-                        // RAKAAT DE NOMBRE PAIR (non finale) -> TACHAHOUD
                         playSound('tachahoud');
-                        document.getElementById('liturgy-label').innerText = "التَّشَهُّدّ";
-                        
-                        sounds.tachahoud.onended = () => {
-                            state.currR++; 
-                            state.currS = 0; 
-                            updateUI();
-                        };
+                        document.getElementById('liturgy-label').innerText = t.litTachahoud;
+                        sounds.tachahoud.onended = () => { state.currR++; state.currS = 0; updateUI(); };
                     } else {
-                        // RAKAAT DE NOMBRE IMPAIR (non finale) -> TAKBIR
                         playSound('takbir');
-                        document.getElementById('liturgy-label').innerText = "اللهُ أَكْبَر";
-                        
-                        setTimeout(() => { 
-                            state.currR++; 
-                            state.currS = 0; 
-                            updateUI(); 
-                        }, 2000);
+                        document.getElementById('liturgy-label').innerText = t.litTakbir;
+                        setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2000);
                     }
                 }
             }
@@ -416,7 +402,6 @@
             if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
         }
 
-        // --- API HORAIRES TUNIS ---
         async function fetchTimes() {
             try {
                 const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
@@ -426,62 +411,22 @@
             } catch (e) { updateUIStrings(); }
         }
 
+        // --- SÉCURISÉE ET BLINDÉE CONTRE LA DISPARITION ---
         function updateUIStrings() {
             const t = i18n[currentLang];
+            
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('btn-exit').innerText = t.back;
             document.getElementById('iqama-title').innerText = t.iqama;
+            document.getElementById('iqama-btn-start').innerText = t.btnStart;
+            
+            if (state.isPraying) {
+                document.getElementById('p-name-active').innerText = t.names[state.currentPrayerIdx];
+            }
             
             const pMap = [
-                {id:'Fajr',r:2, key:'Fajr'},
-                {id:'Dhuhr',r:4, key:'Dhuhr'},
-                {id:'Asr',r:4, key:'Asr'},
-                {id:'Maghrib',r:3, key:'Maghrib'},
-                {id:'Isha',r:4, key:'Isha'}
-            ];
-            
-            const list = document.getElementById('p-list');
-            list.innerHTML = pMap.map((p, i) => {
-                const time = prayerTimes[p.id] || "--:--";
-                const isVolActive = adhanSettings[p.key];
-                const volIcon = isVolActive ? '🔊' : '🔇';
-                
-                return `<tr class="prayer-row">
-                    <td style="width: 50px;"><button class="vol-btn" onclick="toggleAdhanVolume('${p.key}', event)">${volIcon}</button></td>
-                    <td class="clickable-zone p-time" onclick="startIqama('${t.names[i]}', ${p.r})">${time}</td>
-                    <td class="clickable-zone" onclick="startIqama('${t.names[i]}', ${p.r})">${p.r} ${t.rakat}</td>
-                    <td class="clickable-zone" onclick="startIqama('${t.names[i]}', ${p.r})">${t.names[i]}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        function initQibla() {
-            navigator.geolocation.getCurrentPosition(pos => {
-                const latK = 21.4225, lonK = 39.8262;
-                const phi = pos.coords.latitude * Math.PI / 180;
-                const lambda = pos.coords.longitude * Math.PI / 180;
-                const phiK = latK * Math.PI / 180;
-                const lambdaK = lonK * Math.PI / 180;
-                const y = Math.sin(lambdaK - lambda);
-                const x = Math.cos(phi) * Math.tan(phiK) - Math.sin(phi) * Math.cos(lambdaK - lambda);
-                state.qiblaAngle = Math.atan2(y, x) * 180 / Math.PI;
-            });
-
-            window.addEventListener('deviceorientationabsolute', e => {
-                let heading = e.alpha || e.webkitCompassHeading;
-                if (heading) {
-                    const rotation = state.qiblaAngle - heading;
-                    document.getElementById('prayer-rug').style.transform = `rotate(${-rotation + 180}deg)`;
-                }
-            }, true);
-        }
-
-        window.onload = () => { 
-            fetchTimes(); 
-            initQibla(); 
-            // Vérification de l'Adhan toutes les 30 secondes pour être ultra-précis
-            setInterval(checkPrayerTime, 3000);
-        };
-    </script>
-</body>
-</html>
+                {id:'Fajr', r:2, key:'Fajr'},
+                {id:'Dhuhr', r:4, key:'Dhuhr'},
+                {id:'Asr', r:4, key:'Asr'},
+                {id:'Maghrib', r:3, key:'Maghrib'},
+                {id:'Isha', r:4, 
