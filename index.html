@@ -29,72 +29,39 @@
         }
 
         .sphere-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            z-index: 100;
+            position: absolute; top: 20px; right: 20px;
+            display: flex; align-items: center; z-index: 100;
         }
 
         .striated-sphere {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
+            width: 45px; height: 45px; border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #fcf6ba, #bf953f, #aa771c);
             box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset -2px -2px 6px rgba(0,0,0,0.5);
             background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 3px, transparent 4px);
-            cursor: pointer;
-            transition: transform 0.3s;
-            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer; transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.2);
         }
-
-        .striated-sphere:active { transform: scale(0.9); }
 
         #lang-dropdown {
-            display: none;
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid var(--gold);
-            border-radius: 8px;
-            padding: 10px;
-            width: 120px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            display: none; position: absolute; top: 50px; right: 0;
+            background: rgba(0, 0, 0, 0.9); border: 1px solid var(--gold);
+            border-radius: 8px; padding: 10px; width: 120px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        .lang-option {
-            padding: 10px;
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            text-align: right;
-            cursor: pointer;
-        }
-
+        .lang-option { padding: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: right; cursor: pointer; }
         .lang-option:last-child { border-bottom: none; }
-        .lang-option:active { color: var(--gold); }
 
         .header h1 { text-align: center; color: var(--gold); margin: 5px 0; font-size: 2rem; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
         /* TAPIS DE PRIÈRE (QIBLA) */
-        .qibla-area {
-            position: relative; width: 140px; height: 160px; margin: 0 auto 10px;
-        }
-        #prayer-rug {
-            width: 100%; height: 100%; transition: transform 0.4s cubic-bezier(0.1, 0.5, 0.1, 1);
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
-        }
+        .qibla-area { position: relative; width: 140px; height: 160px; margin: 0 auto 10px; display: none; }
+        #prayer-rug { width: 100%; height: 100%; transition: transform 0.4s cubic-bezier(0.1, 0.5, 0.1, 1); filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
 
         .prayer-table { width: 100%; border-collapse: collapse; direction: rtl; margin-top: 10px; }
-        .prayer-row { 
-            background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); 
-            height: 55px;
-        }
-        .prayer-row td { text-align: center; font-size: 1.2rem; font-weight: bold; padding: 0 10px; }
+        .prayer-row { background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); height: 55px; }
+        .prayer-row td { text-align: center; font-size: 1.1rem; font-weight: bold; padding: 0 10px; }
         .p-time { color: var(--gold); font-size: 0.9rem !important; }
         .vol-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 5px; }
-        .clickable-zone { cursor: pointer; }
+        .error-msg { font-size: 0.8rem; color: #ffcccc; margin: 10px; text-align: center; font-style: italic; display: none; }
 
         /* --- IQAMA SCREEN --- */
         #iqama-screen {
@@ -111,33 +78,17 @@
         #adhan-screen {
             display: none; position: fixed; inset: 0; z-index: 4000;
             background: radial-gradient(circle, #043932 0%, #000000 100%);
-            flex-direction: column; justify-content: center; align-items: center;
-            cursor: pointer;
+            flex-direction: column; justify-content: center; align-items: center; cursor: pointer;
         }
-        .adhan-pulse {
-            font-size: 5rem; animation: pulse 2s infinite; margin-bottom: 20px;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.6; }
-        }
+        .adhan-pulse { font-size: 5rem; animation: pulse 2s infinite; margin-bottom: 20px; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.6; } }
 
         /* --- ÉCRAN DE PRIÈRE --- */
-        #prayer-screen {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--black); z-index: 3000;
-        }
-
-        #ui-layer {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 1; pointer-events: none;
-        }
+        #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
+        #ui-layer { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; pointer-events: none; }
         .rakat-display { font-size: 14rem; font-weight: bold; color: var(--gold); line-height: 1; }
         #liturgy-label { font-size: 2.5rem; color: var(--white); text-align: center; margin-top: 10px; font-weight: bold; }
-
-        #touch-layer { position: absolute; width: 100%; height: 100%; z-index: 5; cursor: pointer; }
+        #touch-layer { position: absolute; inset: 0; z-index: 5; cursor: pointer; }
         .btn-back { position: absolute; top: 15px; left: 15px; z-index: 10; background: #222; border: 1px solid var(--gold); color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
@@ -158,7 +109,7 @@
 
         <div class="header"><h1 id="txt-title">KHANZAB</h1></div>
         
-        <div class="qibla-area">
+        <div id="qibla-box" class="qibla-area">
             <svg id="prayer-rug" viewBox="0 0 100 140">
                 <rect x="10" y="10" width="80" height="120" rx="5" fill="#7b1113" stroke="#D4AF37" stroke-width="2"/>
                 <path d="M50 15 L75 40 L75 115 L25 115 L25 40 Z" fill="#5a0d0e" stroke="#D4AF37" stroke-width="1"/>
@@ -167,9 +118,12 @@
             </svg>
         </div>
 
+        <div id="location-error" class="error-msg"></div>
+
         <table class="prayer-table" id="p-list"></table>
     </div>
 
+    <!-- IQAMA -->
     <div id="iqama-screen">
         <div class="arch-decoration"></div>
         <div class="column col-l"></div>
@@ -178,12 +132,14 @@
         <button id="iqama-btn-start" onclick="skipIqama()" style="margin-top:40px; background:var(--gold); border:none; padding:15px 40px; font-weight:bold; border-radius:50px; font-size: 1.2rem; cursor: pointer; color: black;">Commencer</button>
     </div>
 
+    <!-- ADHAN ALERT -->
     <div id="adhan-screen" onclick="stopAdhanAlert()">
         <div class="adhan-pulse">🕌</div>
         <h1 id="adhan-display-title" style="color: var(--gold); font-size: 3rem; margin: 0;">أذان</h1>
         <p id="adhan-display-sub" style="color: white; font-size: 1.2rem; margin-top: 15px;">Appuyez n'importe où pour arrêter</p>
     </div>
 
+    <!-- PRAYER TRACKING -->
     <div id="prayer-screen">
         <button class="btn-back" id="btn-exit" onclick="stopPrayer()">Retour</button>
         <div id="ui-layer">
@@ -199,230 +155,110 @@
         const i18n = {
             ar: { 
                 title: "خنزب", names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", back: "رجوع", rakat: "ركعات",
-                btnStart: "بدء", adhanTitle: "أذان", adhanSub: "اضغط في أي مكان للإيقاف",
+                errLoc: "يرجى تفعيل الموقع (GPS) أو الاتصال بالإنترنت لعرض الأوقات", noTime: "غير متاح",
                 litIsteghfar: "رَبِّ اغْفِرْ لِي", litTakbir: "اللهُ أَكْبَر", litTachahoud: "التَّشَهُّدّ", litTachahoudFinal: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة"
             },
             fr: { 
                 title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Retour", rakat: "Rakats",
-                btnStart: "Commencer", adhanTitle: "Adhan", adhanSub: "Appuyez n'importe où pour arrêter",
+                errLoc: "Activez le GPS ou vérifiez votre connexion pour voir les horaires", noTime: "--:--",
                 litIsteghfar: "Rabbi ghfir li", litTakbir: "Allahu Akbar", litTachahoud: "Tachahoud", litTachahoudFinal: "Tachahoud & Salât Ibrahimiyya"
             },
             tr: { 
                 title: "KHANZAB", names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", back: "Geri", rakat: "Rekat",
-                btnStart: "Başla", adhanTitle: "Ezan", adhanSub: "Durdurmak için herhangi bir yere dokunun",
+                errLoc: "Vakitleri görmek için GPS'i açın veya interneti kontrol edin", noTime: "--:--",
                 litIsteghfar: "Rabbim beni bağışla", litTakbir: "Allahu Ekber", litTachahoud: "Teşehhüd", litTachahoudFinal: "Son Teşehhüd & Salli-Barik"
             },
-            ur: { 
-                title: "خنزب", names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", back: "واپس", rakat: "رکعت",
-                btnStart: "شروع کریں", adhanTitle: "اذان", adhanSub: "روکنے کے لیے کہیں भी ٹچ کریں",
-                litIsteghfar: "رب اغفر لي", litTakbir: "اللہ اکبر", litTachahoud: "تشہد", litTachahoudFinal: "تشہد اور درود ابراہیمی"
-            },
-            id: { 
-                title: "KHANZAB", names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", back: "Kembali", rakat: "Rakaat",
-                btnStart: "Mulai", adhanTitle: "Adzan", adhanSub: "Ketuk di mana saja untuk berhenti",
-                litIsteghfar: "Robbighfirlii", litTakbir: "Allahu Akbar", litTachahoud: "Tahiyyat awal", litTachahoudFinal: "Tahiyyat Akhir & Shalawat"
-            },
-            bn: { 
-                title: "খানজাব", names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", back: "ফিরে যান", rakat: "রাকাত",
-                btnStart: "শুরু করুন", adhanTitle: "আযান", adhanSub: "বন্ধ করতে যেকোনো জায়গায় স্পর্শ করুন",
-                litIsteghfar: "রব্বিগফিরলি", litTakbir: "আল্লাহু আকবার", litTachahoud: "তাশাহহুদ", litTachahoudFinal: "তাশাহহুদ ও দুরুদে ইব্রাহিম"
-            }
+            ur: { title: "خنزب", names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", back: "واپس", rakat: "رکعت", errLoc: "اوقات دیکھنے کے لیے GPS آن کریں", noTime: "--:--" },
+            id: { title: "KHANZAB", names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", back: "Kembali", rakat: "Rakaat", errLoc: "Aktifkan GPS untuk melihat waktu shalat", noTime: "--:--" },
+            bn: { title: "খানজাব", names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", back: "ফিরে যান", rakat: "রাকাত", errLoc: "সময় দেখার জন্য GPS চালু করুন", noTime: "--:--" }
         };
 
         let currentLang = 'ar';
         let prayerTimes = null; 
         let state = { isPraying: false, isAdhanPlaying: false, lastAdhanTriggered: "", currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, currentPrayerIdx: 0 };
-
-        let adhanSettings = JSON.parse(localStorage.getItem('khanzab_adhan_settings')) || {
-            Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true
-        };
+        let adhanSettings = JSON.parse(localStorage.getItem('khanzab_adhan_settings')) || { Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true };
 
         const sounds = {
-            iqama: new Audio('iqama.mp3'),
-            isteghfar: new Audio('isteghfar.mp3'),
-            takbir: new Audio('takbir.mp3'),
-            tachahoud: new Audio('tachahoud.mp3'),
-            tachahoud2: new Audio('tachahoud-2.mp3'),
-            adhan: new Audio('adhan.mp3')
+            iqama: new Audio('iqama.mp3'), isteghfar: new Audio('isteghfar.mp3'), takbir: new Audio('takbir.mp3'),
+            tachahoud: new Audio('tachahoud.mp3'), tachahoud2: new Audio('tachahoud-2.mp3'), adhan: new Audio('adhan.mp3')
         };
 
         function playSound(key) {
             if (sounds[key]) {
                 sounds[key].currentTime = 0;
-                sounds[key].play().catch(e => console.log("Audio bloqué", e));
+                sounds[key].play().catch(() => {});
             }
         }
 
-        function toggleLang() {
-            const dropdown = document.getElementById('lang-dropdown');
-            dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function setLang(lang) {
-            currentLang = lang;
-            document.getElementById('lang-dropdown').style.display = 'none';
-            updateUIStrings();
-        }
-
-        function toggleAdhanVolume(pName, event) {
-            event.stopPropagation();
-            adhanSettings[pName] = !adhanSettings[pName];
-            localStorage.setItem('khanzab_adhan_settings', JSON.stringify(adhanSettings));
-            updateUIStrings();
-        }
-
-        function startIqama(name, r, idx) {
-            state.totalR = r; 
-            state.currentPrayerIdx = idx;
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('iqama-screen').style.display = 'flex';
-            
-            updateUIStrings();
-            playSound('iqama');
-            
-            sounds.iqama.onended = () => { launchPrayer(); };
-        }
-
-        function skipIqama() { 
-            sounds.iqama.pause();
-            sounds.iqama.currentTime = 0;
-            launchPrayer(); 
-        }
-
-        function launchPrayer() {
-            document.getElementById('iqama-screen').style.display = 'none';
-            document.getElementById('prayer-screen').style.display = 'flex';
-            state.isPraying = true; state.currR = 1; state.currS = 0;
-            
-            document.getElementById('p-name-active').innerText = i18n[currentLang].names[state.currentPrayerIdx];
-            document.getElementById('total-r').innerText = state.totalR;
-            updateUI();
-            
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-            if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
-        }
-
-        function checkPrayerTime() {
-            if (state.isPraying || state.isAdhanPlaying || !prayerTimes) return;
-
-            const now = new Date();
-            const currentTimeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
-            const pMap = [
-                { id: 'Fajr', key: 'Fajr' },
-                { id: 'Dhuhr', key: 'Dhuhr' },
-                { id: 'Asr', key: 'Asr' },
-                { id: 'Maghrib', key: 'Maghrib' },
-                { id: 'Isha', key: 'Isha' }
-            ];
-
-            pMap.forEach((p, index) => {
-                let pTime = prayerTimes[p.id];
-                if (pTime) {
-                    pTime = pTime.split(' ')[0]; 
-                    if (currentTimeString === pTime && state.lastAdhanTriggered !== currentTimeString) {
-                        state.lastAdhanTriggered = currentTimeString;
-                        if (adhanSettings[p.key]) {
-                            triggerAdhanAlert(index);
-                        }
-                    }
-                }
-            });
-        }
-
-        function triggerAdhanAlert(prayerIndex) {
-            state.isAdhanPlaying = true;
-            const t = i18n[currentLang];
-            document.getElementById('adhan-display-title').innerText = `${t.adhanTitle} - ${t.names[prayerIndex]}`;
-            document.getElementById('adhan-display-sub').innerText = t.adhanSub;
-            document.getElementById('adhan-screen').style.display = 'flex';
-            
-            sounds.adhan.loop = false;
-            playSound('adhan');
-            sounds.adhan.onended = () => { stopAdhanAlert(); };
-        }
-
-        function stopAdhanAlert() {
-            sounds.adhan.pause();
-            sounds.adhan.currentTime = 0;
-            state.isAdhanPlaying = false;
-            document.getElementById('adhan-screen').style.display = 'none';
-        }
-
-        document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            const now = Date.now();
-            if (now - state.lastTouch < 1200) return;
-            state.lastTouch = now;
-            
-            sounds.tachahoud.onended = null;
-            sounds.tachahoud2.onended = null;
-
-            state.currS++;
-            const t = i18n[currentLang];
-            
-            if (state.currS === 1) {
-                playSound('isteghfar');
-                document.getElementById('liturgy-label').innerText = t.litIsteghfar;
-                document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
-            } else if (state.currS === 2) {
-                document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
-                const isFinal = (state.currR === state.totalR);
-                const isEven = (state.currR % 2 === 0);
-                
-                if (isFinal) {
-                    playSound('tachahoud2');
-                    document.getElementById('liturgy-label').innerText = t.litTachahoudFinal;
-                    sounds.tachahoud2.onended = () => { stopPrayer(); };
-                } else {
-                    if (isEven) {
-                        playSound('tachahoud');
-                        document.getElementById('liturgy-label').innerText = t.litTachahoud;
-                        sounds.tachahoud.onended = () => { state.currR++; state.currS = 0; updateUI(); };
-                    } else {
-                        playSound('takbir');
-                        document.getElementById('liturgy-label').innerText = t.litTakbir;
-                        setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2000);
-                    }
-                }
-            }
-        });
-
-        function updateUI() {
-            document.getElementById('curr-r').innerText = state.currR;
-            document.getElementById('sujud-dots').innerHTML = "⚪ ⚪";
-            document.getElementById('liturgy-label').innerText = "";
-        }
-
-        function stopPrayer() {
-            state.isPraying = false; 
-            Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; s.onended = null; });
-            document.getElementById('prayer-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
-            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
-        }
-
-        // --- DOUBLE SÉCURITÉ DE LOCALISATION INTERNATIONALE ---
-        async function fetchTimes(latitude = null, longitude = null) {
-            let url = 'https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5';
-            
-            if (latitude !== null && longitude !== null) {
-                // Utilisation des coordonnées exactes obtenues via GPS
-                url = `https://api.aladhan.com/v1/timings/${Math.floor(Date.now()/1000)}?latitude=${latitude}&longitude=${longitude}&method=5`;
+        // --- GESTION LOCALISATION & API ---
+        async function initGeo() {
+            // Tentative 1: GPS
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        fetchPrayerTimes(pos.coords.latitude, pos.coords.longitude);
+                        setupQibla(pos.coords.latitude, pos.coords.longitude);
+                    },
+                    () => {
+                        // Tentative 2: Repli par IP si GPS refusé/indisponible
+                        fetchTimesByIP();
+                    },
+                    { timeout: 5000 }
+                );
             } else {
-                // Détection sans GPS (par adresse IP) pour contourner le blocage Chrome sur GitHub
-                url = 'https://api.aladhan.com/v1/timingsByCity?method=5&city=auto&country=auto';
+                fetchTimesByIP();
             }
-            
+        }
+
+        async function fetchTimesByIP() {
+            try {
+                // Utilisation d'un service de géolocalisation IP gratuit
+                const geoRes = await fetch('https://ipapi.co/json/');
+                const geoData = await geoRes.json();
+                if (geoData.latitude) {
+                    fetchPrayerTimes(geoData.latitude, geoData.longitude);
+                    setupQibla(geoData.latitude, geoData.longitude);
+                } else {
+                    showError();
+                }
+            } catch (e) {
+                showError();
+            }
+        }
+
+        async function fetchPrayerTimes(lat, lon) {
+            const url = `https://api.aladhan.com/v1/timings/${Math.floor(Date.now()/1000)}?latitude=${lat}&longitude=${lon}&method=5`;
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                if (data && data.data && data.data.timings) {
+                if (data && data.data.timings) {
                     prayerTimes = data.data.timings;
+                    document.getElementById('location-error').style.display = 'none';
                     updateUIStrings();
-                } else {
-                    throw new Error("Données invalides");
                 }
-            } catch (e) { 
-                // En cas d'échec réseau, on force Tunis en secours ultime
-                if (latitude === null && longit
+            } catch (e) {
+                showError();
+            }
+        }
+
+        function setupQibla(lat, lon) {
+            const latK = 21.4225, lonK = 39.8262;
+            const phi = lat * Math.PI / 180, lambda = lon * Math.PI / 180;
+            const phiK = latK * Math.PI / 180, lambdaK = lonK * Math.PI / 180;
+            const y = Math.sin(lambdaK - lambda);
+            const x = Math.cos(phi) * Math.tan(phiK) - Math.sin(phi) * Math.cos(lambdaK - lambda);
+            state.qiblaAngle = Math.atan2(y, x) * 180 / Math.PI;
+            
+            document.getElementById('qibla-box').style.display = 'block';
+            window.addEventListener('deviceorientationabsolute', (e) => {
+                let heading = e.alpha || e.webkitCompassHeading;
+                if (heading) {
+                    const rotation = state.qiblaAngle - heading;
+                    document.getElementById('prayer-rug').style.transform = `rotate(${-rotation + 180}deg)`;
+                }
+            }, true);
+        }
+
+        function showError() {
+            document.getElementById('location-error').innerText = i18n[currentLang].errLoc;
+            document.getElementById('location-error').style.display = 'block';
