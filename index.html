@@ -28,33 +28,42 @@
             border: 8px solid var(--gold); overflow-y: auto; position: relative;
         }
 
-        .sphere-container { position: absolute; top: 15px; right: 15px; z-index: 100; }
+        /* Sélecteur de Langue (Sphère Striée Dorée) */
+        .sphere-container {
+            position: absolute; top: 15px; right: 15px; z-index: 100;
+        }
         .striated-sphere {
             width: 50px; height: 50px; border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, var(--gold-light), var(--gold), #aa771c);
             box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset -2px -2px 5px rgba(0,0,0,0.5);
             background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(0,0,0,0.1) 4px);
-            cursor: pointer; border: 2px solid var(--gold-light); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d4300; font-size: 0.8rem;
+            cursor: pointer; border: 2px solid var(--gold-light); transition: transform 0.2s;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d4300; font-size: 0.8rem;
         }
+        .striated-sphere:active { transform: scale(0.9); }
 
         #lang-dropdown {
             display: none; position: absolute; top: 55px; right: 0;
             background: rgba(0, 0, 0, 0.95); border: 2px solid var(--gold);
             border-radius: 12px; padding: 5px; width: 140px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        .lang-option { padding: 12px; text-align: center; cursor: pointer; color: white; border-bottom: 1px solid rgba(212, 175, 55, 0.3); }
+        .lang-option { 
+            padding: 12px; font-size: 1rem; border-bottom: 1px solid rgba(212, 175, 55, 0.3); 
+            text-align: center; cursor: pointer; color: white;
+        }
         .lang-option:last-child { border-bottom: none; }
+        .lang-option:hover { background: var(--gold); color: black; }
 
-        .header h1 { text-align: center; color: var(--gold); margin: 5px 0 15px 0; font-size: 2.2rem; letter-spacing: 3px; }
+        .header h1 { text-align: center; color: var(--gold); margin: 5px 0 15px 0; font-size: 2.2rem; letter-spacing: 3px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 
-        /* BOUSSOLE */
+        /* BOUSSOLE (QIBLA) */
         .qibla-area { position: relative; width: 140px; height: 160px; margin: 0 auto 15px; opacity: 0; transition: opacity 1s; }
         #prayer-rug { width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.1, 0.5, 0.1, 1); filter: drop-shadow(0 8px 15px rgba(0,0,0,0.6)); }
 
         .prayer-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .prayer-row { background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); height: 60px; }
         .prayer-row td { text-align: center; font-size: 1.2rem; font-weight: bold; }
-        .p-time { color: var(--gold); font-size: 1rem; font-family: monospace; }
+        .p-time { color: var(--gold); font-size: 1rem !important; font-family: monospace; }
         .vol-btn { font-size: 1.6rem; cursor: pointer; width: 50px; }
 
         /* --- IQAMA --- */
@@ -65,24 +74,15 @@
         }
         #iqama-btn-skip { margin-top: 40px; background: var(--gold); border: none; padding: 15px 40px; font-weight: bold; border-radius: 50px; font-size: 1.3rem; cursor: pointer; color: black; }
 
-        /* --- PRAYER PAGE (Follow-up) --- */
+        /* --- PRAYER PAGE (Landscape) --- */
         #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
-        
-        /* Correction : Affichage forcé au centre */
-        #ui-layer { 
-            position: absolute; inset: 0; 
-            display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; 
-            z-index: 3001; pointer-events: none; 
-        }
-        
-        .rakat-display { font-size: 15rem; font-weight: bold; color: var(--gold); line-height: 1; margin: 0; }
-        #liturgy-label { font-size: 3rem; color: var(--white); text-align: center; font-weight: bold; min-height: 4rem; }
-        
-        #touch-layer { position: absolute; inset: 0; z-index: 3010; cursor: pointer; }
-        .btn-back { position: absolute; top: 15px; left: 15px; z-index: 3020; background: #222; border: 1px solid var(--gold); color: white; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #ui-layer { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; pointer-events: none; }
+        .rakat-display { font-size: 15rem; font-weight: bold; color: var(--gold); line-height: 1; }
+        #liturgy-label { font-size: 2.5rem; color: var(--white); text-align: center; font-weight: bold; padding: 0 20px; }
+        #touch-layer { position: absolute; inset: 0; z-index: 5; cursor: pointer; }
+        .btn-back { position: absolute; top: 15px; left: 15px; z-index: 10; background: #222; border: 1px solid var(--gold); color: white; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        /* --- ADHAN --- */
+        /* --- ADHAN ALERT --- */
         #adhan-screen {
             display: none; position: fixed; inset: 0; z-index: 4000;
             background: radial-gradient(circle, #043932 0%, #000 100%);
@@ -131,7 +131,7 @@
         <p id="txt-adhan-sub" style="color: white; font-size: 1.5rem; margin-top: 20px; opacity: 0.8;">Appuyez pour arrêter</p>
     </div>
 
-    <!-- PRAYER PAGE (Follow-up) -->
+    <!-- PRAYER PAGE -->
     <div id="prayer-screen">
         <button class="btn-back" id="txt-back-btn" onclick="stopPrayer()">RETOUR</button>
         <div id="ui-layer">
@@ -159,23 +159,18 @@
         let adhanSettings = JSON.parse(localStorage.getItem('khanzab_vol')) || { Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true };
 
         const sounds = {
-            iqama: new Audio('iqama.mp3'), 
-            istighfar: new Audio('istighfar.mp3'), 
-            allahuAkbar: new Audio('allahu-akbar.mp3'),
-            tachahoud: new Audio('tachahoud.mp3'), 
-            tachahoudFinal: new Audio('tachahoud-final.mp3'), 
-            adhan: new Audio('adhan.mp3')
+            iqama: new Audio('iqama.mp3'), isteghfar: new Audio('istighfar.mp3'), takbir: new Audio('allahu-akbar.mp3'),
+            tachahoud: new Audio('tachahoud.mp3'), tachahoudFinal: new Audio('tachahoud-final.mp3'), adhan: new Audio('adhan.mp3')
         };
 
         function playSound(key) {
             if (sounds[key]) {
-                sounds[key].pause();
                 sounds[key].currentTime = 0;
-                sounds[key].play().catch(e => console.log("Audio Play Error:", key));
+                sounds[key].play().catch(() => {});
             }
         }
 
-        // --- GESTION TRADUCTION ---
+        // --- GESTION TRADUCTION INTEGRALE ---
         function toggleLang() {
             const d = document.getElementById('lang-dropdown');
             d.style.display = (d.style.display === 'block') ? 'none' : 'block';
@@ -203,17 +198,20 @@
             const pKeys = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             const rCount = [2, 4, 4, 3, 4];
             const isRTL = currentLang === 'ar' || currentLang === 'ur';
+            
             document.getElementById('p-list').style.direction = isRTL ? 'rtl' : 'ltr';
+            
             let html = "";
             pKeys.forEach((key, i) => {
                 const time = prayerTimes ? prayerTimes[key] : "--:--";
                 const isMuted = !adhanSettings[key];
-                html += `<tr class="prayer-row">
-                    <td class="vol-btn" onclick="toggleVol('${key}', event)">${isMuted ? '🔇' : '🔊'}</td>
-                    <td class="p-time">${time}</td>
-                    <td onclick="startIqama('${t.names[i]}', ${rCount[i]})" style="cursor:pointer">${t.names[i]}</td>
-                    <td style="font-size:0.8rem; opacity:0.6; padding:0 10px;">${rCount[i]} ${t.rakat}</td>
-                </tr>`;
+                html += `
+                    <tr class="prayer-row">
+                        <td class="vol-btn" onclick="toggleVol('${key}', event)">${isMuted ? '🔇' : '🔊'}</td>
+                        <td class="p-time">${time}</td>
+                        <td onclick="startIqama('${t.names[i]}', ${rCount[i]})" style="cursor:pointer">${t.names[i]}</td>
+                        <td style="font-size:0.8rem; opacity:0.6; padding:0 10px;">${rCount[i]} ${t.rakat}</td>
+                    </tr>`;
             });
             document.getElementById('p-list').innerHTML = html;
         }
@@ -225,7 +223,7 @@
             renderTable();
         }
 
-        // --- LOCALISATION & BOUSSOLE ---
+        // --- LOCALISATION & BOUSSOLE (CORRECTION Xiaomi) ---
         async function initGeo() {
             applyTranslations();
             if (navigator.geolocation) {
@@ -233,7 +231,9 @@
                     pos => fetchAPI(pos.coords.latitude, pos.coords.longitude),
                     () => fetchAPIByIP()
                 );
-            } else { fetchAPIByIP(); }
+            } else {
+                fetchAPIByIP();
+            }
         }
 
         async function fetchAPIByIP() {
@@ -241,7 +241,9 @@
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
                 fetchAPI(data.latitude || 36.8, data.longitude || 10.1);
-            } catch (e) { fetchAPI(36.8, 10.1); }
+            } catch (e) {
+                fetchAPI(36.8, 10.1); 
+            }
         }
 
         async function fetchAPI(lat, lon) {
@@ -255,28 +257,37 @@
         }
 
         function initQibla(lat, lon) {
+            // Formule mathématique de la Qibla
             const latK = 21.4225 * Math.PI / 180;
             const lonK = 39.8262 * Math.PI / 180;
             const phi = lat * Math.PI / 180;
             const L = lon * Math.PI / 180;
+            
             const y = Math.sin(lonK - L);
             const x = Math.cos(phi) * Math.tan(latK) - Math.sin(phi) * Math.cos(lonK - L);
             state.qibla = Math.atan2(y, x) * 180 / Math.PI;
+            
             document.getElementById('qibla-box').style.opacity = "1";
-            const eventType = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
-            window.addEventListener(eventType, handleOrientation, true);
+
+            // Utilisation du capteur ABSOLU pour Android/Xiaomi
+            if ('ondeviceorientationabsolute' in window) {
+                window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+            } else {
+                window.addEventListener('deviceorientation', handleOrientation, true);
+            }
         }
 
         function handleOrientation(e) {
             let compass = e.webkitCompassHeading || e.alpha;
             if (compass !== null) {
+                // Sur Android l'Alpha est inversé par rapport au Nord
                 let heading = e.webkitCompassHeading ? compass : (360 - compass);
                 let rugRotation = state.qibla - heading;
-                document.getElementById('prayer-rug').style.transform = `rotate(${rugRotation + 180}deg)`;
+                document.getElementById('prayer-rug').style.transform = `rotate(${rugRotation}deg)`;
             }
         }
 
-        // --- LOGIQUE SUIVI (CORRECTION DISPARITION) ---
+        // --- PRAYER LOGIC (2 SUJUD = 1 RAKAT) ---
         function startIqama(name, r) {
             state.totalR = r;
             document.getElementById('home-screen').style.display = 'none';
@@ -290,7 +301,7 @@
 
         function launch() {
             document.getElementById('iqama-screen').style.display = 'none';
-            document.getElementById('prayer-screen').style.display = 'block'; // Utilise block pour activer les couches
+            document.getElementById('prayer-screen').style.display = 'flex';
             state.isPraying = true; state.currR = 1; state.currS = 0;
             document.getElementById('total-r').innerText = state.totalR;
             updateUI();
@@ -308,7 +319,7 @@
             const t = i18n[currentLang];
             
             if (state.currS === 1) {
-                playSound('istighfar');
+                playSound('isteghfar');
                 document.getElementById('liturgy-label').innerText = t.isteghfar;
                 document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
             } else if (state.currS === 2) {
@@ -324,7 +335,7 @@
                         playSound('tachahoud');
                         document.getElementById('liturgy-label').innerText = t.tachahoud;
                     } else {
-                        playSound('allahuAkbar');
+                        playSound('takbir');
                         document.getElementById('liturgy-label').innerText = t.takbir;
                     }
                     setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
@@ -343,7 +354,7 @@
             Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; });
             document.getElementById('prayer-screen').style.display = 'none';
             document.getElementById('home-screen').style.display = 'flex';
-            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+            if (document.exitFullscreen) document.exitFullscreen();
         }
 
         function checkAdhan() {
@@ -373,4 +384,4 @@
         };
     </script>
 </body>
-    </html>
+</html>
