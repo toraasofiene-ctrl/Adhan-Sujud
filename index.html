@@ -47,7 +47,6 @@
 
         .header h1 { text-align: center; color: var(--gold); margin: 5px 0 15px 0; font-size: 2.2rem; letter-spacing: 3px; }
 
-        /* BOUSSOLE */
         .qibla-area { position: relative; width: 140px; height: 160px; margin: 0 auto 15px; opacity: 0; transition: opacity 1s; }
         #prayer-rug { width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.1, 0.5, 0.1, 1); filter: drop-shadow(0 8px 15px rgba(0,0,0,0.6)); }
 
@@ -65,24 +64,24 @@
         }
         #iqama-btn-skip { margin-top: 40px; background: var(--gold); border: none; padding: 15px 40px; font-weight: bold; border-radius: 50px; font-size: 1.3rem; cursor: pointer; color: black; }
 
-        /* --- PRAYER PAGE (Follow-up) --- */
+        /* --- PRAYER PAGE (SUIVI) --- */
         #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
-        
-        /* Correction : Affichage forcé au centre */
         #ui-layer { 
             position: absolute; inset: 0; 
             display: flex; flex-direction: column; 
             justify-content: center; align-items: center; 
             z-index: 3001; pointer-events: none; 
+            padding-bottom: 5vh; 
         }
-        
-        .rakat-display { font-size: 15rem; font-weight: bold; color: var(--gold); line-height: 1; margin: 0; }
-        #liturgy-label { font-size: 3rem; color: var(--white); text-align: center; font-weight: bold; min-height: 4rem; }
+        /* Taille réduite pour libérer de l'espace pour le texte en bas */
+        .rakat-display { font-size: 35vh; font-weight: bold; color: var(--gold); line-height: 1; margin: 0; }
+        .sujud-dots { font-size: 8vh; margin: 1vh 0; }
+        #liturgy-label { font-size: 6vh; color: var(--white); text-align: center; font-weight: bold; min-height: 8vh; text-shadow: 0 0 15px var(--gold); }
         
         #touch-layer { position: absolute; inset: 0; z-index: 3010; cursor: pointer; }
         .btn-back { position: absolute; top: 15px; left: 15px; z-index: 3020; background: #222; border: 1px solid var(--gold); color: white; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        /* --- ADHAN --- */
+        /* --- ADHAN ALERT --- */
         #adhan-screen {
             display: none; position: fixed; inset: 0; z-index: 4000;
             background: radial-gradient(circle, #043932 0%, #000 100%);
@@ -131,13 +130,13 @@
         <p id="txt-adhan-sub" style="color: white; font-size: 1.5rem; margin-top: 20px; opacity: 0.8;">Appuyez pour arrêter</p>
     </div>
 
-    <!-- PRAYER PAGE (Follow-up) -->
+    <!-- PRAYER PAGE -->
     <div id="prayer-screen">
         <button class="btn-back" id="txt-back-btn" onclick="stopPrayer()">RETOUR</button>
         <div id="ui-layer">
-            <div id="p-name-active" style="font-size: 2.5rem; color: var(--gold); margin-bottom: 10px;">FAJR</div>
+            <div id="p-name-active" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;">FAJR</div>
             <div class="rakat-display"><span id="curr-r">1</span>/<span id="total-r">2</span></div>
-            <div id="sujud-dots" style="font-size: 4rem; margin-top:20px;">⚪ ⚪</div>
+            <div id="sujud-dots" class="sujud-dots">⚪ ⚪</div>
             <div id="liturgy-label"></div>
         </div>
         <div id="touch-layer"></div>
@@ -146,7 +145,7 @@
     <script>
         const i18n = {
             ar: { names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", rakat: "ركعات", back: "رجوع", skip: "بدء الآن", adhan: "أذان", adhanSub: "اضغط للإيقاف", isteghfar: "رَبِّ اغْفِرْ لِي", takbir: "اللهُ أَكْبَر", tachahoud: "التَّشَهُّدّ", final: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة" },
-            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama en cours", rakat: "Rakats", back: "RETOUR", skip: "Commencer", adhan: "Adhan", adhanSub: "Appuyez pour arrêter", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahoud: "Tachahoud", final: "Tachahoud & Salât Ibrahimiyya" },
+            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama en cours", rakat: "Rakats", back: "RETOUR", skip: "Commencer", adhan: "Adhan", adhanSub: "Appuyez pour arrêter", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahoud: "Tachahoud", final: "Tachahoud Final" },
             tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet getiriliyor", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahoud: "Teşehhüd", final: "Son Teşehhüd ve Salli-Barik" },
             ur: { names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے ٹچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahoud: "تشہد", final: "تشہد اور درود ابراہیمی" },
             id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama Shalat", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk untuk berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahoud: "Tahiyyat awal", final: "Tahiyyat Akhir & Shalawat" },
@@ -158,12 +157,13 @@
         let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastT: 0, qibla: 0, lastAdhan: "" };
         let adhanSettings = JSON.parse(localStorage.getItem('khanzab_vol')) || { Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true };
 
+        // NOMS DE FICHIERS MP3 FIXÉS
         const sounds = {
             iqama: new Audio('iqama.mp3'), 
-            istighfar: new Audio('istighfar.mp3'), 
-            allahuAkbar: new Audio('allahu-akbar.mp3'),
-            tachahoud: new Audio('tachahoud.mp3'), 
-            tachahoudFinal: new Audio('tachahoud-final.mp3'), 
+            isteghfar: new Audio('isteghfar.mp3'), 
+            takbir: new Audio('takbir.mp3'),
+            tachahod: new Audio('tachahod.mp3'), 
+            tachahod2: new Audio('tachahod-2.mp3'), 
             adhan: new Audio('adhan.mp3')
         };
 
@@ -171,7 +171,7 @@
             if (sounds[key]) {
                 sounds[key].pause();
                 sounds[key].currentTime = 0;
-                sounds[key].play().catch(e => console.log("Audio Play Error:", key));
+                sounds[key].play().catch(e => console.log("Erreur lecture audio:", key));
             }
         }
 
@@ -189,7 +189,7 @@
         }
 
         function applyTranslations() {
-            const t = i18n[currentLang];
+            const t = i18n[currentLang] || i18n.ar;
             document.getElementById('txt-iqama-title').innerText = t.iqama;
             document.getElementById('iqama-btn-skip').innerText = t.skip;
             document.getElementById('txt-back-btn').innerText = t.back;
@@ -199,7 +199,7 @@
         }
 
         function renderTable() {
-            const t = i18n[currentLang];
+            const t = i18n[currentLang] || i18n.ar;
             const pKeys = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             const rCount = [2, 4, 4, 3, 4];
             const isRTL = currentLang === 'ar' || currentLang === 'ur';
@@ -271,12 +271,13 @@
             let compass = e.webkitCompassHeading || e.alpha;
             if (compass !== null) {
                 let heading = e.webkitCompassHeading ? compass : (360 - compass);
+                // BOUSSOLE CORRIGÉE : Suppression de l'inversion de 180°
                 let rugRotation = state.qibla - heading;
-                document.getElementById('prayer-rug').style.transform = `rotate(${rugRotation + 180}deg)`;
+                document.getElementById('prayer-rug').style.transform = `rotate(${rugRotation}deg)`;
             }
         }
 
-        // --- LOGIQUE SUIVI (CORRECTION DISPARITION) ---
+        // --- SUIVI ---
         function startIqama(name, r) {
             state.totalR = r;
             document.getElementById('home-screen').style.display = 'none';
@@ -290,7 +291,7 @@
 
         function launch() {
             document.getElementById('iqama-screen').style.display = 'none';
-            document.getElementById('prayer-screen').style.display = 'block'; // Utilise block pour activer les couches
+            document.getElementById('prayer-screen').style.display = 'block';
             state.isPraying = true; state.currR = 1; state.currS = 0;
             document.getElementById('total-r').innerText = state.totalR;
             updateUI();
@@ -305,26 +306,26 @@
             state.lastT = now;
             
             state.currS++;
-            const t = i18n[currentLang];
+            const t = i18n[currentLang] || i18n.ar;
             
             if (state.currS === 1) {
-                playSound('istighfar');
+                playSound('isteghfar');
                 document.getElementById('liturgy-label').innerText = t.isteghfar;
                 document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
             } else if (state.currS === 2) {
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
                 const isFinal = (state.currR === state.totalR);
                 if (isFinal) {
-                    playSound('tachahoudFinal');
+                    playSound('tachahod2');
                     document.getElementById('liturgy-label').innerText = t.final;
                     setTimeout(() => stopPrayer(), 7000);
                 } else {
                     const isEven = (state.currR % 2 === 0);
                     if (isEven) {
-                        playSound('tachahoud');
+                        playSound('tachahod');
                         document.getElementById('liturgy-label').innerText = t.tachahoud;
                     } else {
-                        playSound('allahuAkbar');
+                        playSound('takbir');
                         document.getElementById('liturgy-label').innerText = t.takbir;
                     }
                     setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
@@ -367,6 +368,7 @@
         window.onload = () => {
             initGeo();
             setInterval(checkAdhan, 30000);
+            // Débloquer l'audio globalement au premier clic
             document.body.addEventListener('click', () => { 
                 Object.values(sounds).forEach(s => { s.play().then(()=>s.pause()).catch(()=>{}) });
             }, {once: true});
