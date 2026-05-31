@@ -29,35 +29,72 @@
         }
 
         .sphere-container {
-            position: absolute; top: 20px; right: 20px;
-            display: flex; align-items: center; z-index: 100;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 100;
         }
+
         .striated-sphere {
-            width: 45px; height: 45px; border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #fcf6ba, #bf953f, #aa771c);
             box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset -2px -2px 6px rgba(0,0,0,0.5);
             background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 3px, transparent 4px);
-            cursor: pointer; transition: transform 0.3s; border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
+        .striated-sphere:active { transform: scale(0.9); }
+
         #lang-dropdown {
-            display: none; position: absolute; top: 50px; right: 0;
-            background: rgba(0, 0, 0, 0.9); border: 1px solid var(--gold);
-            border-radius: 8px; padding: 10px; width: 120px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 10px;
+            width: 120px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
-        .lang-option { padding: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); text-align: right; cursor: pointer; }
+
+        .lang-option {
+            padding: 10px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            text-align: right;
+            cursor: pointer;
+        }
+
         .lang-option:last-child { border-bottom: none; }
+        .lang-option:active { color: var(--gold); }
 
         .header h1 { text-align: center; color: var(--gold); margin: 5px 0; font-size: 2rem; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
-        .qibla-area { position: relative; width: 140px; height: 160px; margin: 0 auto 10px; }
-        #prayer-rug { width: 100%; height: 100%; transition: transform 0.4s cubic-bezier(0.1, 0.5, 0.1, 1); filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
+        /* TAPIS DE PRIÈRE (QIBLA) */
+        .qibla-area {
+            position: relative; width: 140px; height: 160px; margin: 0 auto 10px;
+        }
+        #prayer-rug {
+            width: 100%; height: 100%; transition: transform 0.4s cubic-bezier(0.1, 0.5, 0.1, 1);
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
 
         .prayer-table { width: 100%; border-collapse: collapse; direction: rtl; margin-top: 10px; }
-        .prayer-row { background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); height: 55px; cursor: pointer; }
-        .prayer-row td { text-align: center; font-size: 1.1rem; font-weight: bold; padding: 0 5px; }
+        .prayer-row { 
+            background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); 
+            height: 55px;
+        }
+        .prayer-row td { text-align: center; font-size: 1.2rem; font-weight: bold; padding: 0 10px; }
         .p-time { color: var(--gold); font-size: 0.9rem !important; }
-        .mute-btn { font-size: 1.4rem; cursor: pointer; padding: 5px; }
+        .vol-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 5px; }
+        .clickable-zone { cursor: pointer; }
 
         /* --- IQAMA SCREEN --- */
         #iqama-screen {
@@ -70,22 +107,38 @@
         .column { position: absolute; bottom: 0; width: 30px; height: 70%; background: linear-gradient(to right, #b38728, #fcf6ba, #b38728); }
         .col-l { left: 15px; } .col-r { right: 15px; }
 
+        /* --- ÉCRAN ALERTE ADHAN --- */
+        #adhan-screen {
+            display: none; position: fixed; inset: 0; z-index: 4000;
+            background: radial-gradient(circle, #043932 0%, #000000 100%);
+            flex-direction: column; justify-content: center; align-items: center;
+            cursor: pointer;
+        }
+        .adhan-pulse {
+            font-size: 5rem; animation: pulse 2s infinite; margin-bottom: 20px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
         /* --- ÉCRAN DE PRIÈRE --- */
-        #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
-        #ui-layer { position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; pointer-events: none; }
+        #prayer-screen {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: var(--black); z-index: 3000;
+        }
+
+        #ui-layer {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1; pointer-events: none;
+        }
         .rakat-display { font-size: 14rem; font-weight: bold; color: var(--gold); line-height: 1; }
         #liturgy-label { font-size: 2.5rem; color: var(--white); text-align: center; margin-top: 10px; font-weight: bold; }
-        #touch-layer { position: absolute; width: 100%; height: 100%; z-index: 5; cursor: pointer; }
-        .btn-back { position: absolute; top: 15px; left: 15px; z-index: 10; background: #222; border: 1px solid var(--gold); color: white; padding: 8px 15px; }
 
-        /* --- ALERTE ADHAN --- */
-        #adhan-alert {
-            display: none; position: fixed; inset: 0; z-index: 5000;
-            background: rgba(0,0,0,0.95); flex-direction: column;
-            justify-content: center; align-items: center; text-align: center; cursor: pointer;
-        }
-        .adhan-icon { font-size: 5rem; color: var(--gold); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        #touch-layer { position: absolute; width: 100%; height: 100%; z-index: 5; cursor: pointer; }
+        .btn-back { position: absolute; top: 15px; left: 15px; z-index: 10; background: #222; border: 1px solid var(--gold); color: white; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -124,7 +177,14 @@
         <div class="column col-l"></div>
         <div class="column col-r"></div>
         <h1 id="iqama-title" style="color: var(--gold); font-size: 3.5rem;">إقامة الصلاة</h1>
-        <button onclick="skipIqama()" style="margin-top:40px; background:var(--gold); border:none; padding:15px 40px; font-weight:bold; border-radius:50px; font-size: 1.2rem;">Commencer</button>
+        <button onclick="skipIqama()" style="margin-top:40px; background:var(--gold); border:none; padding:15px 40px; font-weight:bold; border-radius:50px; font-size: 1.2rem; cursor: pointer; color: black;">Commencer</button>
+    </div>
+
+    <!-- ECRAN ALERTE ADHAN -->
+    <div id="adhan-screen" onclick="stopAdhanAlert()">
+        <div class="adhan-pulse">🕌</div>
+        <h1 id="adhan-display-title" style="color: var(--gold); font-size: 3rem; margin: 0;">أذان</h1>
+        <p style="color: white; font-size: 1.2rem; margin-top: 15px;">Appuyez n'importe où pour arrêter</p>
     </div>
 
     <!-- PRIÈRE -->
@@ -139,13 +199,6 @@
         <div id="touch-layer"></div>
     </div>
 
-    <!-- ALERTE ADHAN -->
-    <div id="adhan-alert" onclick="closeAdhan()">
-        <div class="adhan-icon">🔊</div>
-        <h1 id="adhan-name" style="color:var(--gold); font-size:3rem;">ADHAN</h1>
-        <p style="font-size:1.5rem;">Toucher pour arrêter</p>
-    </div>
-
     <script>
         const i18n = {
             ar: { title: "خنزب", names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", back: "رجوع", rakat: "ركعات" },
@@ -156,66 +209,30 @@
             bn: { title: "খানজাব", names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", back: "ফিরে যান", rakat: "রাকাত" }
         };
 
-        const prayerIds = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
         let currentLang = 'ar';
         let prayerTimes = {};
-        let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, timer: null };
+        let state = { isPraying: false, isAdhanPlaying: false, lastAdhanTriggered: "", currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0 };
 
-        // --- AUDIO CONFIGURATION ---
-        const sounds = {};
-        const audioFiles = {
-            iqama: 'iqama.mp3',
-            istighfar: 'istighfar.mp3',
-            allahuAkbar: 'allahu-akbar.mp3',
-            tachahoud: 'tachahoud.mp3',
-            tachahoudFinal: 'tachahoud-final.mp3',
-            adhan: 'adhan.mp3'
+        // --- CHARGEMENT DES PRÉFÉRENCES DE VOLUME DEPUIS LE TÉLÉPHONE ---
+        let adhanSettings = JSON.parse(localStorage.getItem('khanzab_adhan_settings')) || {
+            Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true
         };
 
-        // Création et pré-chargement
-        Object.keys(audioFiles).forEach(key => {
-            sounds[key] = new Audio(audioFiles[key]);
-            sounds[key].preload = 'auto';
-            sounds[key].load();
-        });
-
-        // Déblocage au premier clic/toucher (Crucial pour Xiaomi/Android)
-        function unlockAudio() {
-            Object.values(sounds).forEach(s => {
-                s.play().then(() => {
-                    s.pause();
-                    s.currentTime = 0;
-                }).catch(() => {});
-            });
-            window.removeEventListener('click', unlockAudio);
-            window.removeEventListener('touchstart', unlockAudio);
-            console.log("Audio unlocked and ready.");
-        }
-        window.addEventListener('click', unlockAudio);
-        window.addEventListener('touchstart', unlockAudio);
+        // --- GESTION AUDIO RESTAURÉE ET SÉCURISÉE ---
+        const sounds = {
+            iqama: new Audio('iqama.mp3'),
+            isteghfar: new Audio('isteghfar.mp3'),
+            takbir: new Audio('takbir.mp3'),
+            tachahoud: new Audio('tachahoud.mp3'),
+            tachahoud2: new Audio('tachahoud-2.mp3'),
+            adhan: new Audio('adhan.mp3')
+        };
 
         function playSound(key) {
-            const s = sounds[key];
-            if (s) {
-                s.pause();
-                s.currentTime = 0;
-                let playPromise = s.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Playback failed:", error);
-                    });
-                }
+            if (sounds[key]) {
+                sounds[key].currentTime = 0;
+                sounds[key].play().catch(e => console.log("Audio bloqué ou non chargé", e));
             }
-        }
-
-        // --- PREFERENCES ADHAN ---
-        let adhanSettings = JSON.parse(localStorage.getItem('khanzab_adhan')) || { Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true };
-
-        function toggleMute(pId, event) {
-            event.stopPropagation();
-            adhanSettings[pId] = !adhanSettings[pId];
-            localStorage.setItem('khanzab_adhan', JSON.stringify(adhanSettings));
-            updateUIStrings();
         }
 
         function toggleLang() {
@@ -229,18 +246,30 @@
             updateUIStrings();
         }
 
-        // --- LOGIQUE IQAMA / PRAYER ---
+        // --- GESTION DU VOLUME PAR PRIÈRE ---
+        function toggleAdhanVolume(pName, event) {
+            event.stopPropagation(); // Évite de lancer l'iqama en cliquant sur le volume
+            adhanSettings[pName] = !adhanSettings[pName];
+            localStorage.setItem('khanzab_adhan_settings', JSON.stringify(adhanSettings));
+            updateUIStrings();
+        }
+
+        // --- LOGIQUE IQAMA ---
         function startIqama(name, r) {
             state.totalR = r; state.currentName = name;
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('iqama-screen').style.display = 'flex';
+            
             playSound('iqama');
-            state.timer = setTimeout(() => launchPrayer(), 14500);
+            
+            sounds.iqama.onended = () => {
+                launchPrayer();
+            };
         }
 
         function skipIqama() { 
-            clearTimeout(state.timer); 
             sounds.iqama.pause();
+            sounds.iqama.currentTime = 0;
             launchPrayer(); 
         }
 
@@ -255,42 +284,119 @@
             if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
 
-        // --- LOGIQUE TACTILE (PAGE SUIVI) ---
+        // --- SURVEILLANCE HORAIRE DE L'ADHAN (1 SEULE FOIS) ---
+        function checkPrayerTime() {
+            if (state.isPraying || state.isAdhanPlaying) return;
+
+            const now = new Date();
+            const currentHours = String(now.getHours()).padStart(2, '0');
+            const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+            const currentTimeString = `${currentHours}:${currentMinutes}`;
+
+            const pMap = [
+                { id: 'Fajr', key: 'Fajr' },
+                { id: 'Dhuhr', key: 'Dhuhr' },
+                { id: 'Asr', key: 'Asr' },
+                { id: 'Maghrib', key: 'Maghrib' },
+                { id: 'Isha', key: 'Isha' }
+            ];
+
+            pMap.forEach((p, index) => {
+                let pTime = prayerTimes[p.id];
+                if (pTime) {
+                    // Nettoyage format au cas où l'API renvoie des caractères en trop
+                    pTime = pTime.split(' ')[0]; 
+                    
+                    if (currentTimeString === pTime && state.lastAdhanTriggered !== currentTimeString) {
+                        state.lastAdhanTriggered = currentTimeString;
+                        
+                        // Si l'utilisateur a activé l'Adhan pour cette prière
+                        if (adhanSettings[p.key]) {
+                            triggerAdhanAlert(i18n[currentLang].names[index]);
+                        }
+                    }
+                }
+            });
+        }
+
+        function triggerAdhanAlert(prayerNameTranslated) {
+            state.isAdhanPlaying = true;
+            document.getElementById('adhan-display-title').innerText = `${i18n[currentLang].iqama === 'إقامة الصلاة' ? 'أذان' : 'Adhan'} ${prayerNameTranslated}`;
+            document.getElementById('adhan-screen').style.display = 'flex';
+            
+            sounds.adhan.loop = false; // Joue UNE seule fois
+            playSound('adhan');
+
+            // Si l'adhan se termine tout seul, on ferme l'écran d'alerte
+            sounds.adhan.onended = () => {
+                stopAdhanAlert();
+            };
+        }
+
+        function stopAdhanAlert() {
+            sounds.adhan.pause();
+            sounds.adhan.currentTime = 0;
+            state.isAdhanPlaying = false;
+            document.getElementById('adhan-screen').style.display = 'none';
+        }
+
+        // --- ENTIÈREMENT RESTAURÉ : LOGIQUE TACTILE DE SUIVI AUDIO BLINDÉE ---
         document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
             e.preventDefault();
             const now = Date.now();
-            // Délai de sécurité anti-rebond légèrement réduit à 1s pour plus de réactivité
-            if (now - state.lastTouch < 1000) return;
+            
+            // Sécurité anti-parasitage stricte de 1.2 seconde
+            if (now - state.lastTouch < 1200) return;
             state.lastTouch = now;
+            
+            // Nettoyage des comportements de fin précédents pour éviter les conflits
+            sounds.tachahoud.onended = null;
+            sounds.tachahoud2.onended = null;
 
             state.currS++;
+            
             if (state.currS === 1) {
-                playSound('istighfar');
-                document.getElementById('liturgy-label').innerText = "إستغفار";
+                // APRÈS PREMIER SUJOURD DE CHAQUE RAKAAT -> ISTEGHFAR
+                playSound('isteghfar');
+                document.getElementById('liturgy-label').innerText = "رَبِّ اغْفِرْ Lِي";
                 document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
+                
             } else if (state.currS === 2) {
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
+                
                 const isFinal = (state.currR === state.totalR);
                 const isEven = (state.currR % 2 === 0);
                 
                 if (isFinal) {
-                    playSound('tachahoudFinal');
-                    document.getElementById('liturgy-label').innerText = "تشهد و الصلاة الإبراهيمية";
-                    setTimeout(() => stopPrayer(), 6000);
+                    // RAKAAT FINALE -> TACHAHOUD-2 (Voix humaine complète)
+                    playSound('tachahoud2');
+                    document.getElementById('liturgy-label').innerText = "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة";
+                    
+                    sounds.tachahoud2.onended = () => {
+                        stopPrayer();
+                    };
                 } else {
                     if (isEven) {
+                        // RAKAAT DE NOMBRE PAIR (non finale) -> TACHAHOUD
                         playSound('tachahoud');
-                        document.getElementById('liturgy-label').innerText = "تشهد";
+                        document.getElementById('liturgy-label').innerText = "التَّشَهُّدّ";
+                        
+                        sounds.tachahoud.onended = () => {
+                            state.currR++; 
+                            state.currS = 0; 
+                            updateUI();
+                        };
                     } else {
-                        playSound('allahuAkbar');
-                        document.getElementById('liturgy-label').innerText = "الله أكبر";
+                        // RAKAAT DE NOMBRE IMPAIR (non finale) -> TAKBIR
+                        playSound('takbir');
+                        document.getElementById('liturgy-label').innerText = "اللهُ أَكْبَر";
+                        
+                        setTimeout(() => { 
+                            state.currR++; 
+                            state.currS = 0; 
+                            updateUI(); 
+                        }, 2000);
                     }
-                    // Passage à la rakat suivante
-                    setTimeout(() => { 
-                        state.currR++; 
-                        state.currS = 0; 
-                        updateUI(); 
-                    }, 2500);
                 }
             }
         });
@@ -303,43 +409,13 @@
 
         function stopPrayer() {
             state.isPraying = false; 
-            Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; });
+            Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; s.onended = null; });
             document.getElementById('prayer-screen').style.display = 'none';
             document.getElementById('home-screen').style.display = 'flex';
             if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
         }
 
-        // --- ALERTE ADHAN LOGIQUE ---
-        function checkAdhan() {
-            if (state.isPraying) return;
-            const now = new Date();
-            const currentTimeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-
-            prayerIds.forEach((pId, index) => {
-                if (prayerTimes[pId] === currentTimeStr && adhanSettings[pId]) {
-                    triggerAdhan(i18n[currentLang].names[index]);
-                }
-            });
-        }
-
-        function triggerAdhan(name) {
-            const alertBox = document.getElementById('adhan-alert');
-            if (alertBox.style.display === 'flex') return;
-            document.getElementById('adhan-name').innerText = name;
-            alertBox.style.display = 'flex';
-            playSound('adhan');
-            sounds.adhan.onended = () => closeAdhan();
-        }
-
-        function closeAdhan() {
-            sounds.adhan.pause();
-            sounds.adhan.currentTime = 0;
-            document.getElementById('adhan-alert').style.display = 'none';
-        }
-
-        setInterval(checkAdhan, 60000);
-
-        // --- API & BOUSSOLE ---
+        // --- API HORAIRES TUNIS ---
         async function fetchTimes() {
             try {
                 const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
@@ -354,14 +430,26 @@
             document.getElementById('txt-title').innerText = t.title;
             document.getElementById('btn-exit').innerText = t.back;
             document.getElementById('iqama-title').innerText = t.iqama;
+            
+            const pMap = [
+                {id:'Fajr',r:2, key:'Fajr'},
+                {id:'Dhuhr',r:4, key:'Dhuhr'},
+                {id:'Asr',r:4, key:'Asr'},
+                {id:'Maghrib',r:3, key:'Maghrib'},
+                {id:'Isha',r:4, key:'Isha'}
+            ];
+            
             const list = document.getElementById('p-list');
-            list.innerHTML = prayerIds.map((pId, i) => {
-                const time = prayerTimes[pId] || "--:--";
-                const isMuted = !adhanSettings[pId];
-                return `<tr class="prayer-row" onclick="startIqama('${t.names[i]}', ${pId === 'Fajr' ? 2 : pId === 'Maghrib' ? 3 : 4})">
-                    <td class="mute-btn" onclick="toggleMute('${pId}', event)">${isMuted ? '🔇' : '🔊'}</td>
-                    <td class="p-time">${time}</td>
-                    <td>${t.names[i]}</td>
+            list.innerHTML = pMap.map((p, i) => {
+                const time = prayerTimes[p.id] || "--:--";
+                const isVolActive = adhanSettings[p.key];
+                const volIcon = isVolActive ? '🔊' : '🔇';
+                
+                return `<tr class="prayer-row">
+                    <td style="width: 50px;"><button class="vol-btn" onclick="toggleAdhanVolume('${p.key}', event)">${volIcon}</button></td>
+                    <td class="clickable-zone p-time" onclick="startIqama('${t.names[i]}', ${p.r})">${time}</td>
+                    <td class="clickable-zone" onclick="startIqama('${t.names[i]}', ${p.r})">${p.r} ${t.rakat}</td>
+                    <td class="clickable-zone" onclick="startIqama('${t.names[i]}', ${p.r})">${t.names[i]}</td>
                 </tr>`;
             }).join('');
         }
@@ -377,6 +465,7 @@
                 const x = Math.cos(phi) * Math.tan(phiK) - Math.sin(phi) * Math.cos(lambdaK - lambda);
                 state.qiblaAngle = Math.atan2(y, x) * 180 / Math.PI;
             });
+
             window.addEventListener('deviceorientationabsolute', e => {
                 let heading = e.alpha || e.webkitCompassHeading;
                 if (heading) {
@@ -386,7 +475,12 @@
             }, true);
         }
 
-        window.onload = () => { fetchTimes(); initQibla(); };
+        window.onload = () => { 
+            fetchTimes(); 
+            initQibla(); 
+            // Vérification de l'Adhan toutes les 30 secondes pour être ultra-précis
+            setInterval(checkPrayerTime, 3000);
+        };
     </script>
 </body>
 </html>
