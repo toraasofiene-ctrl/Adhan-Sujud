@@ -325,4 +325,63 @@
             } else if (state.currS === 2) {
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
                 const isFinal = (state.currR === state.totalR);
-                i
+                if (isFinal) {
+                    playSound('tachahoudFinal');
+                    document.getElementById('liturgy-label').innerText = t.final;
+                    setTimeout(() => stopPrayer(), 7000);
+                } else {
+                    const isEven = (state.currR % 2 === 0);
+                    if (isEven) {
+                        playSound('tachahoud');
+                        document.getElementById('liturgy-label').innerText = t.tachahoud;
+                    } else {
+                        playSound('takbir');
+                        document.getElementById('liturgy-label').innerText = t.takbir;
+                    }
+                    setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
+                }
+            }
+        });
+
+        function updateUI() {
+            document.getElementById('curr-r').innerText = state.currR;
+            document.getElementById('sujud-dots').innerHTML = "⚪ ⚪";
+            document.getElementById('liturgy-label').innerText = "";
+        }
+
+        function stopPrayer() {
+            state.isPraying = false;
+            Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; });
+            document.getElementById('prayer-screen').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'flex';
+            if (document.exitFullscreen) document.exitFullscreen();
+        }
+
+        function checkAdhan() {
+            if (state.isPraying || !prayerTimes) return;
+            const now = new Date();
+            const cur = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => {
+                if (prayerTimes[k] === cur && state.lastAdhan !== cur && adhanSettings[k]) {
+                    state.lastAdhan = cur;
+                    document.getElementById('adhan-screen').style.display = 'flex';
+                    playSound('adhan');
+                }
+            });
+        }
+
+        function stopAdhanAlert() {
+            sounds.adhan.pause();
+            document.getElementById('adhan-screen').style.display = 'none';
+        }
+
+        window.onload = () => {
+            initGeo();
+            setInterval(checkAdhan, 30000);
+            document.body.addEventListener('click', () => { 
+                Object.values(sounds).forEach(s => { s.play().then(()=>s.pause()).catch(()=>{}) });
+            }, {once: true});
+        };
+    </script>
+</body>
+</html>
