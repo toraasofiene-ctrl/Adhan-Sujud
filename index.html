@@ -143,6 +143,7 @@
 </head>
 <body>
 
+    <!-- ACCUEIL -->
     <div id="home-screen">
         <div class="sphere-container">
             <div class="striated-sphere" onclick="toggleLang()"></div>
@@ -170,6 +171,7 @@
         <table class="prayer-table" id="p-list"></table>
     </div>
 
+    <!-- IQAMA -->
     <div id="iqama-screen">
         <div class="arch-decoration"></div>
         <div class="column col-l"></div>
@@ -178,12 +180,14 @@
         <button id="iqama-btn-start" onclick="skipIqama()" style="margin-top:40px; background:var(--gold); border:none; padding:15px 40px; font-weight:bold; border-radius:50px; font-size: 1.2rem; cursor: pointer; color: black;">Commencer</button>
     </div>
 
+    <!-- ECRAN ALERTE ADHAN -->
     <div id="adhan-screen" onclick="stopAdhanAlert()">
         <div class="adhan-pulse">🕌</div>
         <h1 id="adhan-display-title" style="color: var(--gold); font-size: 3rem; margin: 0;">أذان</h1>
         <p id="adhan-display-sub" style="color: white; font-size: 1.2rem; margin-top: 15px;">Appuyez n'importe où pour arrêter</p>
     </div>
 
+    <!-- PRIÈRE -->
     <div id="prayer-screen">
         <button class="btn-back" id="btn-exit" onclick="stopPrayer()">Retour</button>
         <div id="ui-layer">
@@ -196,6 +200,7 @@
     </div>
 
     <script>
+        // --- BASE DE TRADUCTIONS INTÉGRALE ET SÉCURISÉE ---
         const i18n = {
             ar: { 
                 title: "خنزب", names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", back: "رجوع", rakat: "ركعات",
@@ -205,7 +210,7 @@
             fr: { 
                 title: "KHANZAB", names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", back: "Retour", rakat: "Rakats",
                 btnStart: "Commencer", adhanTitle: "Adhan", adhanSub: "Appuyez n'importe où pour arrêter",
-                litIsteghfar: "Rabbi ghfir li", litTakbir: "Allahu Akbar", litTachahoud: "Tachahoud", litTachahoudFinal: "Tachahoud & Salât Ibrahimiyya"
+                litIsteghfar: "Rabbi ghfir li (Pardon)", litTakbir: "Allahu Akbar", litTachahoud: "Tachahoud", litTachahoudFinal: "Tachahoud & Salât Ibrahimiyya"
             },
             tr: { 
                 title: "KHANZAB", names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", back: "Geri", rakat: "Rekat",
@@ -214,7 +219,7 @@
             },
             ur: { 
                 title: "خنزب", names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", back: "واپس", rakat: "رکعت",
-                btnStart: "شروع کریں", adhanTitle: "اذان", adhanSub: "روکنے کے لیے کہیں भी ٹچ کریں",
+                btnStart: "شروع کریں", adhanTitle: "اذان", adhanSub: "روکنے کے لیے کہیں بھی ٹچ کریں",
                 litIsteghfar: "رب اغفر لي", litTakbir: "اللہ اکبر", litTachahoud: "تشہد", litTachahoudFinal: "تشہد اور درود ابراہیمی"
             },
             id: { 
@@ -230,13 +235,15 @@
         };
 
         let currentLang = 'ar';
-        let prayerTimes = null; // Vaut null au départ tant que l'API n'a pas répondu
+        let prayerTimes = {};
         let state = { isPraying: false, isAdhanPlaying: false, lastAdhanTriggered: "", currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, currentPrayerIdx: 0 };
 
+        // --- CHARGEMENT DES PRÉFÉRENCES DE VOLUME ---
         let adhanSettings = JSON.parse(localStorage.getItem('khanzab_adhan_settings')) || {
             Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true
         };
 
+        // --- GESTION AUDIO FIABLE ---
         const sounds = {
             iqama: new Audio('iqama.mp3'),
             isteghfar: new Audio('isteghfar.mp3'),
@@ -249,7 +256,7 @@
         function playSound(key) {
             if (sounds[key]) {
                 sounds[key].currentTime = 0;
-                sounds[key].play().catch(e => console.log("Audio bloqué", e));
+                sounds[key].play().catch(e => console.log("Audio bloqué ou non chargé", e));
             }
         }
 
@@ -271,16 +278,19 @@
             updateUIStrings();
         }
 
+        // --- LOGIQUE IQAMA (AVEC TRADUCTION) ---
         function startIqama(name, r, idx) {
             state.totalR = r; 
-            state.currentPrayerIdx = idx;
+            state.currentPrayerIdx = idx; // Sauvegarde de l'index pour traduire le nom en direct dans l'écran de suivi
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('iqama-screen').style.display = 'flex';
             
-            updateUIStrings();
+            updateUIStrings(); // Force l'écriture dans la bonne langue
             playSound('iqama');
             
-            sounds.iqama.onended = () => { launchPrayer(); };
+            sounds.iqama.onended = () => {
+                launchPrayer();
+            };
         }
 
         function skipIqama() { 
@@ -294,6 +304,7 @@
             document.getElementById('prayer-screen').style.display = 'flex';
             state.isPraying = true; state.currR = 1; state.currS = 0;
             
+            // Traduit dynamiquement le nom de la prière active sur l'écran noir
             document.getElementById('p-name-active').innerText = i18n[currentLang].names[state.currentPrayerIdx];
             document.getElementById('total-r').innerText = state.totalR;
             updateUI();
@@ -302,11 +313,14 @@
             if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
 
+        // --- SURVEILLANCE HORAIRE DE L'ADHAN ---
         function checkPrayerTime() {
-            if (state.isPraying || state.isAdhanPlaying || !prayerTimes) return;
+            if (state.isPraying || state.isAdhanPlaying) return;
 
             const now = new Date();
-            const currentTimeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            const currentHours = String(now.getHours()).padStart(2, '0');
+            const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+            const currentTimeString = `${currentHours}:${currentMinutes}`;
 
             const pMap = [
                 { id: 'Fajr', key: 'Fajr' },
@@ -320,8 +334,10 @@
                 let pTime = prayerTimes[p.id];
                 if (pTime) {
                     pTime = pTime.split(' ')[0]; 
+                    
                     if (currentTimeString === pTime && state.lastAdhanTriggered !== currentTimeString) {
                         state.lastAdhanTriggered = currentTimeString;
+                        
                         if (adhanSettings[p.key]) {
                             triggerAdhanAlert(index);
                         }
@@ -332,14 +348,19 @@
 
         function triggerAdhanAlert(prayerIndex) {
             state.isAdhanPlaying = true;
+            
             const t = i18n[currentLang];
             document.getElementById('adhan-display-title').innerText = `${t.adhanTitle} - ${t.names[prayerIndex]}`;
             document.getElementById('adhan-display-sub').innerText = t.adhanSub;
+            
             document.getElementById('adhan-screen').style.display = 'flex';
             
             sounds.adhan.loop = false;
             playSound('adhan');
-            sounds.adhan.onended = () => { stopAdhanAlert(); };
+
+            sounds.adhan.onended = () => {
+                stopAdhanAlert();
+            };
         }
 
         function stopAdhanAlert() {
@@ -349,40 +370,60 @@
             document.getElementById('adhan-screen').style.display = 'none';
         }
 
+        // --- LOGIQUE TACTILE TRADUITE ET SÉCURISÉE ---
         document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
             e.preventDefault();
             const now = Date.now();
+            
             if (now - state.lastTouch < 1200) return;
             state.lastTouch = now;
             
-            sounds.tachahoud.onended = null;
-            sounds.tachahoud2.onended = null;
+            sounds.addendedHandlers = null; 
 
             state.currS++;
-            const t = i18n[currentLang];
+            const t = i18n[currentLang]; // Récupère le dictionnaire de traduction actif
             
             if (state.currS === 1) {
+                // TEXTE RE-ÉCRIT SELON LA LANGUE CHOISIE
                 playSound('isteghfar');
                 document.getElementById('liturgy-label').innerText = t.litIsteghfar;
                 document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
+                
             } else if (state.currS === 2) {
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
+                
                 const isFinal = (state.currR === state.totalR);
                 const isEven = (state.currR % 2 === 0);
                 
                 if (isFinal) {
+                    // TEXTE RE-ÉCRIT SELON LA LANGUE CHOISIE
                     playSound('tachahoud2');
                     document.getElementById('liturgy-label').innerText = t.litTachahoudFinal;
-                    sounds.tachahoud2.onended = () => { stopPrayer(); };
+                    
+                    sounds.tachahoud2.onended = () => {
+                        stopPrayer();
+                    };
                 } else {
                     if (isEven) {
+                        // TEXTE RE-ÉCRIT SELON LA LANGUE CHOISIE
                         playSound('tachahoud');
                         document.getElementById('liturgy-label').innerText = t.litTachahoud;
-                        sounds.tachahoud.onended = () => { state.currR++; state.currS = 0; updateUI(); };
+                        
+                        sounds.tachahoud.onended = () => {
+                            state.currR++; 
+                            state.currS = 0; 
+                            updateUI();
+                        };
                     } else {
+                        // TEXTE RE-ÉCRIT SELON LA LANGUE CHOISIE
                         playSound('takbir');
                         document.getElementById('liturgy-label').innerText = t.litTakbir;
-                        setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2000);
+                        
+                        setTimeout(() => { 
+                            state.currR++; 
+                            state.currS = 0; 
+                            updateUI(); 
+                        }, 2000);
                     }
                 }
             }
@@ -397,36 +438,4 @@
         function stopPrayer() {
             state.isPraying = false; 
             Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; s.onended = null; });
-            document.getElementById('prayer-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
-            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
-        }
-
-        async function fetchTimes() {
-            try {
-                const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
-                const data = await res.json();
-                prayerTimes = data.data.timings;
-                updateUIStrings();
-            } catch (e) { updateUIStrings(); }
-        }
-
-        // --- SÉCURISÉE ET BLINDÉE CONTRE LA DISPARITION ---
-        function updateUIStrings() {
-            const t = i18n[currentLang];
-            
-            document.getElementById('txt-title').innerText = t.title;
-            document.getElementById('btn-exit').innerText = t.back;
-            document.getElementById('iqama-title').innerText = t.iqama;
-            document.getElementById('iqama-btn-start').innerText = t.btnStart;
-            
-            if (state.isPraying) {
-                document.getElementById('p-name-active').innerText = t.names[state.currentPrayerIdx];
-            }
-            
-            const pMap = [
-                {id:'Fajr', r:2, key:'Fajr'},
-                {id:'Dhuhr', r:4, key:'Dhuhr'},
-                {id:'Asr', r:4, key:'Asr'},
-                {id:'Maghrib', r:3, key:'Maghrib'},
-                {id:'Isha', r:4, 
+            document.getElementById('prayer-screen').s
