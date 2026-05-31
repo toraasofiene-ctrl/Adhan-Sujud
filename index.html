@@ -402,13 +402,26 @@
             if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
         }
 
-        async function fetchTimes() {
+                async function fetchTimes() {
             try {
-                const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
+                // Détection automatique de la ville et du pays de l'utilisateur
+                const res = await fetch('https://api.aladhan.com/v1/timingsByCity?method=5&city=auto&country=auto');
                 const data = await res.json();
                 prayerTimes = data.data.timings;
                 updateUIStrings();
-            } catch (e) { updateUIStrings(); }
+            } catch (e) { 
+                // Secours sur Tunis si la détection automatique échoue
+                try {
+                    const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
+                    const data = await res.json();
+                    prayerTimes = data.data.timings;
+                    updateUIStrings();
+                } catch(err) {
+                    updateUIStrings(); 
+                }
+            }
+        }
+
         }
 
         // --- SÉCURISÉE ET BLINDÉE CONTRE LA DISPARITION ---
