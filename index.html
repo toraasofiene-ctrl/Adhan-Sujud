@@ -161,34 +161,50 @@
         let prayerTimes = {};
         let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, timer: null };
 
-        // --- AUDIO ---
-        const sounds = {
-            iqama: new Audio('iqama.mp3'),
-            istighfar: new Audio('istighfar.mp3'),
-            allahuAkbar: new Audio('allahu-akbar.mp3'),
-            tachahoud: new Audio('tachahoud.mp3'),
-            tachahoudFinal: new Audio('tachahoud-final.mp3'),
-            adhan: new Audio('adhan.mp3')
+        // --- AUDIO CONFIGURATION ---
+        const sounds = {};
+        const audioFiles = {
+            iqama: 'iqama.mp3',
+            istighfar: 'istighfar.mp3',
+            allahuAkbar: 'allahu-akbar.mp3',
+            tachahoud: 'tachahoud.mp3',
+            tachahoudFinal: 'tachahoud-final.mp3',
+            adhan: 'adhan.mp3'
         };
 
-        // Fonction pour débloquer l'audio sur mobile au premier contact
-        function primeAudio() {
+        // Création et pré-chargement
+        Object.keys(audioFiles).forEach(key => {
+            sounds[key] = new Audio(audioFiles[key]);
+            sounds[key].preload = 'auto';
+            sounds[key].load();
+        });
+
+        // Déblocage au premier clic/toucher (Crucial pour Xiaomi/Android)
+        function unlockAudio() {
             Object.values(sounds).forEach(s => {
                 s.play().then(() => {
                     s.pause();
                     s.currentTime = 0;
                 }).catch(() => {});
             });
-            window.removeEventListener('click', primeAudio);
-            window.removeEventListener('touchstart', primeAudio);
+            window.removeEventListener('click', unlockAudio);
+            window.removeEventListener('touchstart', unlockAudio);
+            console.log("Audio unlocked and ready.");
         }
-        window.addEventListener('click', primeAudio);
-        window.addEventListener('touchstart', primeAudio);
+        window.addEventListener('click', unlockAudio);
+        window.addEventListener('touchstart', unlockAudio);
 
         function playSound(key) {
-            if (sounds[key]) {
-                sounds[key].currentTime = 0;
-                sounds[key].play().catch(e => console.log("Blocked playback:", e));
+            const s = sounds[key];
+            if (s) {
+                s.pause();
+                s.currentTime = 0;
+                let playPromise = s.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log("Playback failed:", error);
+                    });
+                }
             }
         }
 
@@ -239,11 +255,14 @@
             if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
 
+        // --- LOGIQUE TACTILE (PAGE SUIVI) ---
         document.getElementById('touch-layer').addEventListener('touchstart', (e) => {
             e.preventDefault();
             const now = Date.now();
-            if (now - state.lastTouch < 1200) return;
+            // Délai de sécurité anti-rebond légèrement réduit à 1s pour plus de réactivité
+            if (now - state.lastTouch < 1000) return;
             state.lastTouch = now;
+
             state.currS++;
             if (state.currS === 1) {
                 playSound('istighfar');
@@ -253,6 +272,7 @@
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
                 const isFinal = (state.currR === state.totalR);
                 const isEven = (state.currR % 2 === 0);
+                
                 if (isFinal) {
                     playSound('tachahoudFinal');
                     document.getElementById('liturgy-label').innerText = "تشهد و الصلاة الإبراهيمية";
@@ -265,7 +285,12 @@
                         playSound('allahuAkbar');
                         document.getElementById('liturgy-label').innerText = "الله أكبر";
                     }
-                    setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
+                    // Passage à la rakat suivante
+                    setTimeout(() => { 
+                        state.currR++; 
+                        state.currS = 0; 
+                        updateUI(); 
+                    }, 2500);
                 }
             }
         });
@@ -302,7 +327,7 @@
             if (alertBox.style.display === 'flex') return;
             document.getElementById('adhan-name').innerText = name;
             alertBox.style.display = 'flex';
-            sounds.adhan.play();
+            playSound('adhan');
             sounds.adhan.onended = () => closeAdhan();
         }
 
