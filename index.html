@@ -230,7 +230,7 @@
         };
 
         let currentLang = 'ar';
-        let prayerTimes = null; // Vaut null au départ tant que l'API n'a pas répondu
+        let prayerTimes = null; 
         let state = { isPraying: false, isAdhanPlaying: false, lastAdhanTriggered: "", currR: 1, totalR: 0, currS: 0, lastTouch: 0, qiblaAngle: 0, currentPrayerIdx: 0 };
 
         let adhanSettings = JSON.parse(localStorage.getItem('khanzab_adhan_settings')) || {
@@ -402,31 +402,27 @@
             if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
         }
 
-        async function fetchTimes() {
-            try {
-                const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5');
-                const data = await res.json();
-                prayerTimes = data.data.timings;
-                updateUIStrings();
-            } catch (e) { updateUIStrings(); }
-        }
-
-        // --- SÉCURISÉE ET BLINDÉE CONTRE LA DISPARITION ---
-        function updateUIStrings() {
-            const t = i18n[currentLang];
+        // --- DOUBLE SÉCURITÉ DE LOCALISATION INTERNATIONALE ---
+        async function fetchTimes(latitude = null, longitude = null) {
+            let url = 'https://api.aladhan.com/v1/timingsByCity?city=Tunis&country=Tunisia&method=5';
             
-            document.getElementById('txt-title').innerText = t.title;
-            document.getElementById('btn-exit').innerText = t.back;
-            document.getElementById('iqama-title').innerText = t.iqama;
-            document.getElementById('iqama-btn-start').innerText = t.btnStart;
-            
-            if (state.isPraying) {
-                document.getElementById('p-name-active').innerText = t.names[state.currentPrayerIdx];
+            if (latitude !== null && longitude !== null) {
+                // Utilisation des coordonnées exactes obtenues via GPS
+                url = `https://api.aladhan.com/v1/timings/${Math.floor(Date.now()/1000)}?latitude=${latitude}&longitude=${longitude}&method=5`;
+            } else {
+                // Détection sans GPS (par adresse IP) pour contourner le blocage Chrome sur GitHub
+                url = 'https://api.aladhan.com/v1/timingsByCity?method=5&city=auto&country=auto';
             }
             
-            const pMap = [
-                {id:'Fajr', r:2, key:'Fajr'},
-                {id:'Dhuhr', r:4, key:'Dhuhr'},
-                {id:'Asr', r:4, key:'Asr'},
-                {id:'Maghrib', r:3, key:'Maghrib'},
-                {id:'Isha', r:4, 
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data && data.data && data.data.timings) {
+                    prayerTimes = data.data.timings;
+                    updateUIStrings();
+                } else {
+                    throw new Error("Données invalides");
+                }
+            } catch (e) { 
+                // En cas d'échec réseau, on force Tunis en secours ultime
+                if (latitude === null && longit
