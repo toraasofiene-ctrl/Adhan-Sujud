@@ -1,18 +1,3 @@
-Je m'excuse pour ce dysfonctionnement. L'écran vert fixe signifie que le
-JavaScript s'est arrêté à cause d'une erreur (probablement liée au chargement
-des sons).
-
-Voici le code totalement corrigé, simplifié et stabilisé.
-
-1.  Sons GitHub : J'ai utilisé exactement vos noms de fichiers : isteghfar.mp3,
-    takbir.mp3, tachahod.mp3, tachahod-2.mp3, iqama.mp3, adhan.mp3.
-2.  Audio Premier Clic : Le son de l'Iqama se déclenche maintenant directement
-    lors du clic sur la ligne de prière.
-3.  Boussole : J'ai supprimé l'inversion de 180° pour qu'elle pointe
-    correctement.
-4.  Visibilité : Le texte en bas de la page de suivi est remonté pour être
-    parfaitement visible.
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -36,14 +21,24 @@ Voici le code totalement corrigé, simplifié et stabilisé.
         #home-screen { display: flex; flex-direction: column; height: 100%; padding: 15px; background: radial-gradient(circle, var(--emerald) 0%, #043932 100%); border: 8px solid var(--gold); overflow-y: auto; position: relative; }
 
         .sphere-container { position: absolute; top: 15px; right: 15px; z-index: 100; }
-        .striated-sphere { width: 50px; height: 50px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--gold-light), var(--gold), #aa771c); box-shadow: 0 4px 15px rgba(0,0,0,0.6); cursor: pointer; border: 2px solid var(--gold-light); display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d4300; font-size: 0.8rem; }
+        .striated-sphere { 
+            width: 50px; height: 50px; border-radius: 50%; 
+            background: radial-gradient(circle at 30% 30%, var(--gold-light), var(--gold), #aa771c); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6); cursor: pointer; border: 2px solid var(--gold-light); 
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: #5d4300; font-size: 0.8rem; 
+        }
 
-        #lang-dropdown { display: none; position: absolute; top: 55px; right: 0; background: rgba(0, 0, 0, 0.95); border: 2px solid var(--gold); border-radius: 12px; padding: 5px; width: 140px; }
+        #lang-dropdown { 
+            display: none; position: absolute; top: 55px; right: 0; 
+            background: rgba(0, 0, 0, 0.95); border: 2px solid var(--gold); 
+            border-radius: 12px; padding: 5px; width: 140px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
         .lang-option { padding: 12px; text-align: center; cursor: pointer; color: white; border-bottom: 1px solid rgba(212, 175, 55, 0.3); }
+        .lang-option:last-child { border-bottom: none; }
 
         .header h1 { text-align: center; color: var(--gold); margin: 5px 0 15px 0; font-size: 2.2rem; letter-spacing: 3px; }
 
-        .qibla-area { position: relative; width: 140px; height: 160px; margin: 0 auto 15px; opacity: 1; }
+        .qibla-area { position: relative; width: 140px; height: 160px; margin: 0 auto 15px; }
         #prayer-rug { width: 100%; height: 100%; transition: transform 0.5s ease-out; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.6)); }
 
         .prayer-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -54,7 +49,7 @@ Voici le code totalement corrigé, simplifié et stabilisé.
 
         /* --- IQAMA --- */
         #iqama-screen { display: none; position: fixed; inset: 0; z-index: 2000; background: var(--emerald); border: 15px solid var(--gold); flex-direction: column; justify-content: center; align-items: center; }
-        #iqama-btn-skip { margin-top: 40px; background: var(--gold); border: none; padding: 15px 40px; font-weight: bold; border-radius: 50px; font-size: 1.3rem; cursor: pointer; }
+        #iqama-btn-skip { margin-top: 40px; background: var(--gold); border: none; padding: 15px 40px; font-weight: bold; border-radius: 50px; font-size: 1.3rem; cursor: pointer; color: black; }
 
         /* --- SUIVI --- */
         #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
@@ -94,16 +89,19 @@ Voici le code totalement corrigé, simplifié et stabilisé.
         <table class="prayer-table" id="p-list"></table>
     </div>
 
+    <!-- IQAMA -->
     <div id="iqama-screen">
         <h1 id="txt-iqama-title" style="color: var(--gold); font-size: 3.5rem;">إقامة الصلاة</h1>
         <button id="iqama-btn-skip" onclick="skipIqama()">Commencer</button>
     </div>
 
+    <!-- ADHAN -->
     <div id="adhan-screen" onclick="stopAdhanAlert()">
         <div style="font-size: 6rem;">🕌</div>
         <h1 id="txt-adhan-title" style="color: var(--gold); font-size: 3rem;">أذان</h1>
     </div>
 
+    <!-- PRAYER PAGE -->
     <div id="prayer-screen">
         <button class="btn-back" id="txt-back-btn" onclick="stopPrayer()">RETOUR</button>
         <div id="ui-layer">
@@ -118,12 +116,16 @@ Voici le code totalement corrigé, simplifié et stabilisé.
     <script>
         const i18n = {
             ar: { names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", rakat: "ركعات", back: "رجوع", skip: "بدء الآن", adhan: "أذان", isteghfar: "رَبِّ اغْفِرْ لِي", takbir: "اللهُ أَكْبَر", tachahod: "التَّشَهُّدّ", final: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة" },
-            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", rakat: "Rakats", back: "RETOUR", skip: "Commencer", adhan: "Adhan", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahod: "Tachahoud", final: "Tachahoud Final" }
+            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", rakat: "Rakats", back: "RETOUR", skip: "Commencer", adhan: "Adhan", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahod: "Tachahoud", final: "Tachahoud Final" },
+            tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahod: "Teşehhüd", final: "Son Teşehhüd" },
+            ur: { names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahod: "تشہد", final: "تشہد اور درود ابراہیمی" },
+            id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahod: "Tahiyyat awal", final: "Tahiyyat Akhir" },
+            bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahod: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদ" }
         };
 
         let currentLang = localStorage.getItem('khanzab_lang') || 'ar';
         let prayerTimes = null;
-        let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastT: 0, qibla: 0 };
+        let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastT: 0, qibla: 0, currentPrayerName: "" };
         let adhanSettings = JSON.parse(localStorage.getItem('khanzab_vol')) || { Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true };
 
         const sounds = {
@@ -141,7 +143,13 @@ Voici le code totalement corrigé, simplifié et stabilisé.
         }
 
         function toggleLang() { const d = document.getElementById('lang-dropdown'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
-        function setLang(lang) { currentLang = lang; localStorage.setItem('khanzab_lang', lang); document.getElementById('lang-dropdown').style.display = 'none'; applyTranslations(); }
+        
+        function setLang(lang) { 
+            currentLang = lang; 
+            localStorage.setItem('khanzab_lang', lang); 
+            document.getElementById('lang-dropdown').style.display = 'none'; 
+            applyTranslations(); 
+        }
 
         function applyTranslations() {
             const t = i18n[currentLang] || i18n.ar;
@@ -204,10 +212,10 @@ Voici le code totalement corrigé, simplifié et stabilisé.
 
         function startIqama(name, r) {
             state.totalR = r;
+            state.currentPrayerName = name;
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('iqama-screen').style.display = 'flex';
             document.getElementById('p-name-active').innerText = name;
-            // Débloque et joue Iqama
             playSound('iqama');
             sounds.iqama.onended = () => launch();
         }
@@ -245,13 +253,25 @@ Voici le code totalement corrigé, simplifié et stabilisé.
         });
 
         function updateUI() { document.getElementById('curr-r').innerText = state.currR; document.getElementById('sujud-dots').innerHTML = "⚪ ⚪"; document.getElementById('liturgy-label').innerText = ""; }
-        function stopPrayer() { state.isPraying = false; Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; }); document.getElementById('prayer-screen').style.display = 'none'; document.getElementById('home-screen').style.display = 'flex'; if (document.exitFullscreen) document.exitFullscreen().catch(()=>{}); }
+        
+        function stopPrayer() { 
+            state.isPraying = false; 
+            Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; }); 
+            document.getElementById('prayer-screen').style.display = 'none'; 
+            document.getElementById('home-screen').style.display = 'flex'; 
+            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{}); 
+        }
+
         function stopAdhanAlert() { sounds.adhan.pause(); document.getElementById('adhan-screen').style.display = 'none'; }
 
-        window.onload = () => { initGeo(); setInterval(() => { if (!state.isPraying && prayerTimes) {
-            const cur = new Date().getHours().toString().padStart(2,'0') + ":" + new Date().getMinutes().toString().padStart(2,'0');
-            ['Fajr','Dhuhr','Asr','Maghrib','Isha'].forEach(k => { if (prayerTimes[k] === cur && adhanSettings[k]) { document.getElementById('adhan-screen').style.display = 'flex'; playSound('adhan'); }});
-        }}, 30000); };
+        window.onload = () => { 
+            initGeo(); 
+            setInterval(() => { if (!state.isPraying && prayerTimes) {
+                const cur = new Date().getHours().toString().padStart(2,'0') + ":" + new Date().getMinutes().toString().padStart(2,'0');
+                ['Fajr','Dhuhr','Asr','Maghrib','Isha'].forEach(k => { if (prayerTimes[k] === cur && adhanSettings[k]) { document.getElementById('adhan-screen').style.display = 'flex'; playSound('adhan'); }});
+            }}, 30000); 
+            document.body.addEventListener('click', () => { Object.values(sounds).forEach(s => { s.play().then(()=>s.pause()).catch(()=>{}) }); }, {once: true});
+        };
     </script>
 </body>
 </html>
