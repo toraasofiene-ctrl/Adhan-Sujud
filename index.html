@@ -47,11 +47,12 @@
 
         .header h1 { text-align: center; color: var(--gold); margin: 5px 0 15px 0; font-size: 2.2rem; letter-spacing: 3px; }
 
+        /* BOUSSOLE */
         .qibla-area { position: relative; width: 140px; height: 160px; margin: 0 auto 15px; opacity: 0; transition: opacity 1s; }
         #prayer-rug { width: 100%; height: 100%; transition: transform 0.5s cubic-bezier(0.1, 0.5, 0.1, 1); filter: drop-shadow(0 8px 15px rgba(0,0,0,0.6)); }
 
         .prayer-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .prayer-row { background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); height: 60px; }
+        .prayer-row { background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--gold); height: 60px; cursor: pointer; }
         .prayer-row td { text-align: center; font-size: 1.2rem; font-weight: bold; }
         .p-time { color: var(--gold); font-size: 1rem; font-family: monospace; }
         .vol-btn { font-size: 1.6rem; cursor: pointer; width: 50px; }
@@ -73,7 +74,6 @@
             z-index: 3001; pointer-events: none; 
             padding-bottom: 5vh; 
         }
-        /* Taille réduite pour libérer de l'espace pour le texte en bas */
         .rakat-display { font-size: 35vh; font-weight: bold; color: var(--gold); line-height: 1; margin: 0; }
         .sujud-dots { font-size: 8vh; margin: 1vh 0; }
         #liturgy-label { font-size: 6vh; color: var(--white); text-align: center; font-weight: bold; min-height: 8vh; text-shadow: 0 0 15px var(--gold); }
@@ -81,7 +81,7 @@
         #touch-layer { position: absolute; inset: 0; z-index: 3010; cursor: pointer; }
         .btn-back { position: absolute; top: 15px; left: 15px; z-index: 3020; background: #222; border: 1px solid var(--gold); color: white; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        /* --- ADHAN ALERT --- */
+        /* --- ADHAN SCREEN --- */
         #adhan-screen {
             display: none; position: fixed; inset: 0; z-index: 4000;
             background: radial-gradient(circle, #043932 0%, #000 100%);
@@ -123,7 +123,7 @@
         <button id="iqama-btn-skip" onclick="skipIqama()">Commencer</button>
     </div>
 
-    <!-- ADHAN SCREEN -->
+    <!-- ADHAN -->
     <div id="adhan-screen" onclick="stopAdhanAlert()">
         <div style="font-size: 6rem; margin-bottom: 20px;">🕌</div>
         <h1 id="txt-adhan-title" style="color: var(--gold); font-size: 4rem; margin: 0;">أذان</h1>
@@ -144,12 +144,12 @@
 
     <script>
         const i18n = {
-            ar: { names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", rakat: "ركعات", back: "رجوع", skip: "بدء الآن", adhan: "أذان", adhanSub: "اضغط للإيقاف", isteghfar: "رَبِّ اغْفِرْ لِي", takbir: "اللهُ أَكْبَر", tachahoud: "التَّشَهُّدّ", final: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة" },
-            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama en cours", rakat: "Rakats", back: "RETOUR", skip: "Commencer", adhan: "Adhan", adhanSub: "Appuyez pour arrêter", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahoud: "Tachahoud", final: "Tachahoud Final" },
-            tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet getiriliyor", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahoud: "Teşehhüd", final: "Son Teşehhüd ve Salli-Barik" },
-            ur: { names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے ٹچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahoud: "تشہد", final: "تشہد اور درود ابراہیمی" },
-            id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama Shalat", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk untuk berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahoud: "Tahiyyat awal", final: "Tahiyyat Akhir & Shalawat" },
-            bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত হচ্ছে", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", adhanSub: "বন্ধ করতে স্পর্শ করুন", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahoud: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদে ইব্রাহিম" }
+            ar: { names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", rakat: "ركعات", back: "رجوع", skip: "بدء الآن", adhan: "أذان", adhanSub: "اضغط للإيقاف", isteghfar: "رَبِّ اغْفِرْ لِي", takbir: "اللهُ أَكْبَر", tachahod: "التَّشَهُّدّ", final: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة" },
+            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama en cours", rakat: "Rakats", back: "RETOUR", skip: "Commencer", adhan: "Adhan", adhanSub: "Appuyez pour arrêter", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahod: "Tachahoud", final: "Tachahoud Final" },
+            tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet getiriliyor", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahod: "Teşehhüd", final: "Son Teşehhüd ve Salli-Barik" },
+            ur: { names: ["فجر", "ظہر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے ٹچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahod: "تشہد", final: "تشہد اور درود ابراہیمی" },
+            id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama Shalat", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk pour berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahod: "Tahiyyat awal", final: "Tahiyyat Akhir & Shalawat" },
+            bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত হচ্ছে", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", adhanSub: "বন্ধ করতে স্পর্শ করুন", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahod: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদে ইব্রাহিম" }
         };
 
         let currentLang = localStorage.getItem('khanzab_lang') || 'ar';
@@ -157,7 +157,6 @@
         let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastT: 0, qibla: 0, lastAdhan: "" };
         let adhanSettings = JSON.parse(localStorage.getItem('khanzab_vol')) || { Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true };
 
-        // NOMS DE FICHIERS MP3 FIXÉS
         const sounds = {
             iqama: new Audio('iqama.mp3'), 
             isteghfar: new Audio('isteghfar.mp3'), 
@@ -168,10 +167,11 @@
         };
 
         function playSound(key) {
-            if (sounds[key]) {
-                sounds[key].pause();
-                sounds[key].currentTime = 0;
-                sounds[key].play().catch(e => console.log("Erreur lecture audio:", key));
+            const s = sounds[key];
+            if (s) {
+                s.pause();
+                s.currentTime = 0;
+                s.play().catch(e => console.log("Erreur lecture audio:", key));
             }
         }
 
@@ -208,10 +208,10 @@
             pKeys.forEach((key, i) => {
                 const time = prayerTimes ? prayerTimes[key] : "--:--";
                 const isMuted = !adhanSettings[key];
-                html += `<tr class="prayer-row">
+                html += `<tr class="prayer-row" onclick="startIqama('${t.names[i]}', ${rCount[i]})">
                     <td class="vol-btn" onclick="toggleVol('${key}', event)">${isMuted ? '🔇' : '🔊'}</td>
                     <td class="p-time">${time}</td>
-                    <td onclick="startIqama('${t.names[i]}', ${rCount[i]})" style="cursor:pointer">${t.names[i]}</td>
+                    <td style="cursor:pointer">${t.names[i]}</td>
                     <td style="font-size:0.8rem; opacity:0.6; padding:0 10px;">${rCount[i]} ${t.rakat}</td>
                 </tr>`;
             });
@@ -271,19 +271,25 @@
             let compass = e.webkitCompassHeading || e.alpha;
             if (compass !== null) {
                 let heading = e.webkitCompassHeading ? compass : (360 - compass);
-                // BOUSSOLE CORRIGÉE : Suppression de l'inversion de 180°
                 let rugRotation = state.qibla - heading;
                 document.getElementById('prayer-rug').style.transform = `rotate(${rugRotation}deg)`;
             }
         }
 
-        // --- SUIVI ---
+        // --- IQAMA & PRAYER LOGIC ---
         function startIqama(name, r) {
+            // DEBLOQUER TOUS LES SONS AU PREMIER CLIC REEL
+            Object.values(sounds).forEach(s => {
+                s.play().then(() => s.pause()).catch(() => {});
+            });
+
             state.totalR = r;
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('iqama-screen').style.display = 'flex';
             document.getElementById('p-name-active').innerText = name;
-            playSound('iqama');
+            
+            // Jouer Iqama immédiatement
+            setTimeout(() => { playSound('iqama'); }, 50);
             sounds.iqama.onended = () => launch();
         }
 
@@ -317,62 +323,4 @@
                 const isFinal = (state.currR === state.totalR);
                 if (isFinal) {
                     playSound('tachahod2');
-                    document.getElementById('liturgy-label').innerText = t.final;
-                    setTimeout(() => stopPrayer(), 7000);
-                } else {
-                    const isEven = (state.currR % 2 === 0);
-                    if (isEven) {
-                        playSound('tachahod');
-                        document.getElementById('liturgy-label').innerText = t.tachahoud;
-                    } else {
-                        playSound('takbir');
-                        document.getElementById('liturgy-label').innerText = t.takbir;
-                    }
-                    setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
-                }
-            }
-        });
-
-        function updateUI() {
-            document.getElementById('curr-r').innerText = state.currR;
-            document.getElementById('sujud-dots').innerHTML = "⚪ ⚪";
-            document.getElementById('liturgy-label').innerText = "";
-        }
-
-        function stopPrayer() {
-            state.isPraying = false;
-            Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; });
-            document.getElementById('prayer-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
-            if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
-        }
-
-        function checkAdhan() {
-            if (state.isPraying || !prayerTimes) return;
-            const now = new Date();
-            const cur = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-            ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => {
-                if (prayerTimes[k] === cur && state.lastAdhan !== cur && adhanSettings[k]) {
-                    state.lastAdhan = cur;
-                    document.getElementById('adhan-screen').style.display = 'flex';
-                    playSound('adhan');
-                }
-            });
-        }
-
-        function stopAdhanAlert() {
-            sounds.adhan.pause();
-            document.getElementById('adhan-screen').style.display = 'none';
-        }
-
-        window.onload = () => {
-            initGeo();
-            setInterval(checkAdhan, 30000);
-            // Débloquer l'audio globalement au premier clic
-            document.body.addEventListener('click', () => { 
-                Object.values(sounds).forEach(s => { s.play().then(()=>s.pause()).catch(()=>{}) });
-            }, {once: true});
-        };
-    </script>
-</body>
-</html>
+                    document.getElementById('liturgy-label'
