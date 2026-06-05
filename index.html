@@ -1,147 +1,186 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Iqama - Version Paysage</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e67e22;
+        }
 
-void main() {
-  runApp(const MyApp());
-}
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Empêche le scroll sur la page principale */
+        }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+        /* --- 1. FIX HEADER (Titre à gauche, Bouton à droite) --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Mon Application Prière',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const HomePage(),
-    );
-  }
-}
+        .header-title {
+            margin: 0;
+            flex: 1; /* Pousse tout le reste vers la droite */
+            text-align: left;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
 
-// --- PAGE D'ACCUEIL ---
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+        .lang-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 15px; /* Espace de sécurité */
+        }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Accueil"),
-        centerTitle: false, // Titre décalé à gauche
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text("Aller à l'Iqama"),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const IqamaPage()),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
+        /* --- 2. PAGE IQAMA (VUE PAYSAGE & IMAGE DÉCOR) --- */
+        .iqama-container {
+            width: 100vw;
+            height: 100vh;
+            /* L'image jointe remplace l'arche */
+            background-image: url('votre_image_iqama.jpg'); 
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
 
-// --- PAGE IQAMA (MODIFIÉE) ---
-class IqamaPage extends StatefulWidget {
-  const IqamaPage({super.key});
+        /* Forcer le contenu à s'adapter au mode paysage */
+        @media screen and (orientation: portrait) {
+            .iqama-container::before {
+                content: "Veuillez tourner votre appareil en mode paysage";
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: #000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+            }
+        }
 
-  @override
-  State<IqamaPage> createState() => _IqamaPageState();
-}
+        .iqama-content {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
 
-class _IqamaPageState extends State<IqamaPage> {
-  @override
-  void initState() {
-    super.initState();
-    // Force le mode PAYSAGE à l'entrée
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
-  }
+        /* --- 3. PAGE DE SUIVI (FIX PROBLÈME MUET) --- */
+        .tracking-section {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-top: 20px;
+            min-width: 300px;
+            color: #333;
+            text-shadow: none;
+        }
 
-  @override
-  void dispose() {
-    // Revient en mode PORTRAIT en quittant la page
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    super.dispose();
-  }
+        #tracking-status {
+            font-weight: bold;
+            margin-top: 10px;
+        }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // On étend le corps derrière l'AppBar pour voir l'image partout
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text(
-          "Iqama",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: false, // Titre décalé à gauche
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      body: Stack(
-        children: [
-          // 1. L'IMAGE DE FOND (Remplace l'arche)
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background_iqama.jpg'),
-                fit: BoxFit.cover, // L'image couvre tout l'écran paysage
-              ),
-            ),
-          ),
-          
-          // 2. LE CONTENU (Overlay)
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.black.withOpacity(0.2), // Filtre léger pour la lisibilité
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "IQAMA EN COURS",
-                  style: TextStyle(
-                    fontSize: 40,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2,
-                    shadows: [
-                      Shadow(blurRadius: 10, color: Colors.black, offset: Offset(2, 2))
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                // Exemple de compte à rebours ou info
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Text(
-                    "Prière dans : 05:00",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #d9534f;
+            background: #fdf7f7;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 5px solid #d9534f;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="header-title">Application Iqama</h1>
+        <button class="lang-btn">FR / AR</button>
+    </header>
+
+    <main class="iqama-container">
+        <div class="iqama-content">
+            <h2>Prochaine Prière : Asr</h2>
+            <div style="font-size: 3rem;">15:45</div>
+            
+            <!-- Section Suivi Corrigée -->
+            <div class="tracking-section">
+                <h3>Suivi en temps réel</h3>
+                <div id="tracking-display">
+                    <span class="loading-spinner"></span>
+                    <span id="status-text">Synchronisation des données...</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Script pour gérer la page de suivi "muette"
+        function updateTracking() {
+            const display = document.getElementById('tracking-display');
+            
+            // Simulation d'un délai réseau
+            setTimeout(() => {
+                // On vérifie si les données arrivent (ici simulation)
+                const dataAvailable = false; // Mettre à 'true' pour tester le succès
+
+                if (dataAvailable) {
+                    display.innerHTML = '<span style="color: green;">✅ Système synchronisé : Mode silence activé</span>';
+                } else {
+                    // Au lieu de rester muet, on affiche une erreur explicite et un bouton de secours
+                    display.innerHTML = `
+                        <div class="error-message">
+                            <strong>Erreur de connexion :</strong> Les données de suivi ne répondent pas.
+                            <br><button onclick="location.reload()" style="margin-top:10px; cursor:pointer;">Réessayer</button>
+                        </div>
+                    `;
+                }
+            }, 3000); // 3 secondes avant de déclarer le problème
+        }
+
+        // Lancement auto
+        window.onload = updateTracking;
+    </script>
+
+</body>
+</html>
