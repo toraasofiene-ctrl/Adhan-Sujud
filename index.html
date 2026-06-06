@@ -45,7 +45,6 @@
         .lang-option { padding: 12px; text-align: center; cursor: pointer; color: white; border-bottom: 1px solid rgba(212, 175, 55, 0.3); }
         .lang-option:last-child { border-bottom: none; }
 
-        /* MODIFICATION : Titre à l'extrême gauche */
         .header h1 { text-align: left; color: var(--gold); margin: 5px 0 15px 0; font-size: 2.2rem; letter-spacing: 3px; }
 
         /* BOUSSOLE */
@@ -58,13 +57,31 @@
         .p-time { color: var(--gold); font-size: 1rem; font-family: monospace; }
         .vol-btn { font-size: 1.6rem; cursor: pointer; width: 50px; }
 
-        /* --- IQAMA --- */
+        /* --- IQAMA (PAYSAGE AVEC IMAGE GITHUB) --- */
         #iqama-screen {
             display: none; position: fixed; inset: 0; z-index: 2000;
-            background: var(--emerald); border: 15px solid var(--gold);
+            background: url('iqama.webp') no-repeat center center;
+            background-size: cover;
             flex-direction: column; justify-content: center; align-items: center; text-align: center;
         }
-        #iqama-btn-skip { margin-top: 40px; background: var(--gold); border: none; padding: 15px 40px; font-weight: bold; border-radius: 50px; font-size: 1.3rem; cursor: pointer; color: black; }
+        #txt-iqama-title { 
+            color: var(--gold); 
+            font-size: 3.5rem; 
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.8);
+            margin: 0;
+        }
+        #iqama-btn-skip { 
+            margin-top: 40px; 
+            background: var(--gold); 
+            border: none; 
+            padding: 15px 50px; 
+            font-weight: bold; 
+            border-radius: 50px; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            color: black;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
 
         /* --- PRAYER PAGE (SUIVI) --- */
         #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
@@ -118,13 +135,13 @@
         <table class="prayer-table" id="p-list"></table>
     </div>
 
-    <!-- IQAMA -->
+    <!-- IQAMA (VERSION PAYSAGE IMAGE) -->
     <div id="iqama-screen">
-        <h1 id="txt-iqama-title" style="color: var(--gold); font-size: 3.5rem;">إقامة الصلاة</h1>
-        <button id="iqama-btn-skip" onclick="skipIqama()">Commencer</button>
+        <h1 id="txt-iqama-title"></h1>
+        <button id="iqama-btn-skip" onclick="skipIqama()"></button>
     </div>
 
-    <!-- ADHAN -->
+    <!-- ADHAN SCREEN -->
     <div id="adhan-screen" onclick="stopAdhanAlert()">
         <div style="font-size: 6rem; margin-bottom: 20px;">🕌</div>
         <h1 id="txt-adhan-title" style="color: var(--gold); font-size: 4rem; margin: 0;">أذان</h1>
@@ -147,9 +164,9 @@
         const i18n = {
             ar: { names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "إقامة الصلاة", rakat: "ركعات", back: "رجوع", skip: "بدء الآن", adhan: "أذان", adhanSub: "اضغط للإيقاف", isteghfar: "رَبِّ اغْفِرْ لِي", takbir: "اللهُ أَكْبَر", tachahod: "التَّشَهُّدّ", final: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة" },
             fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama en cours", rakat: "Rakats", back: "RETOUR", skip: "Commencer", adhan: "Adhan", adhanSub: "Appuyez pour arrêter", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahoud: "Tachahoud", final: "Tachahoud Final" },
-            tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet getiriliyor", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahoud: "Teşehhüd", final: "Son Teşehhüd ve Salli-Barik" },
-            ur: { names: ["فجر", "ظهر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے ٹچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahod: "تشہد", final: "تشہد اور درود ابراہیمی" },
-            id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama Shalat", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk pour berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahoud: "Tahiyyat awal", final: "Tahiyyat Akhir & Shalawat" },
+            tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet getiriliyor", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahoud: "Teşehhüd", final: "Son Teşehhüd" },
+            ur: { names: ["فجر", "ظهر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے ٹچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahoud: "تشہد", final: "تشہد اور درود ابراہیمی" },
+            id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama Shalat", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk pour berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahoud: "Tahiyyat awal", final: "Tahiyyat Akhir" },
             bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত হচ্ছে", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", adhanSub: "বন্ধ করতে স্পর্শ করুন", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahoud: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদে ইব্রাহিম" }
         };
 
@@ -172,11 +189,10 @@
             if (s) {
                 s.pause();
                 s.currentTime = 0;
-                s.play().catch(e => console.log("Erreur lecture audio:", key));
+                s.play().catch(e => console.log("Erreur audio", key));
             }
         }
 
-        // --- GESTION TRADUCTION ---
         function toggleLang() {
             const d = document.getElementById('lang-dropdown');
             d.style.display = (d.style.display === 'block') ? 'none' : 'block';
@@ -226,7 +242,6 @@
             renderTable();
         }
 
-        // --- LOCALISATION & BOUSSOLE ---
         async function initGeo() {
             applyTranslations();
             if (navigator.geolocation) {
@@ -242,9 +257,7 @@
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
                 fetchAPI(data.latitude || 36.8, data.longitude || 10.1);
-            } catch (e) {
-                fetchAPI(36.8, 10.1); 
-            }
+            } catch (e) { fetchAPI(36.8, 10.1); }
         }
 
         async function fetchAPI(lat, lon) {
@@ -279,8 +292,14 @@
             }
         }
 
-        // --- IQAMA & PRAYER LOGIC ---
+        // --- IQAMA ---
         function startIqama(name, r) {
+            // Forcer le paysage et plein écran dès l'iqama
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(()=>{});
+            }
+
             Object.values(sounds).forEach(s => {
                 s.play().then(() => s.pause()).catch(() => {});
             });
@@ -290,7 +309,7 @@
             document.getElementById('iqama-screen').style.display = 'flex';
             document.getElementById('p-name-active').innerText = name;
             
-            setTimeout(() => { playSound('iqama'); }, 50);
+            setTimeout(() => { playSound('iqama'); }, 100);
             sounds.iqama.onended = () => launch();
         }
 
@@ -302,8 +321,6 @@
             state.isPraying = true; state.currR = 1; state.currS = 0;
             document.getElementById('total-r').innerText = state.totalR;
             updateUI();
-            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-            if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{});
         }
 
         document.getElementById('touch-layer').addEventListener('touchstart', e => {
