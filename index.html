@@ -57,13 +57,24 @@
         .p-time { color: var(--gold); font-size: 1rem; font-family: monospace; }
         .vol-btn { font-size: 1.6rem; cursor: pointer; width: 50px; }
 
-        /* --- IQAMA (PORTRAIT AJUSTÉ SUR LE MIHRAB) --- */
+        /* Style pour la note de calcul de la Ligue Islamique Mondiale */
+        .mwl-disclaimer {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding: 0 10px;
+            line-height: 1.3;
+        }
+
+        /* --- IQAMA (PORTRAIT AU BAS SUR LE MIHRAB) --- */
         #iqama-screen {
             display: none; position: fixed; inset: 0; z-index: 2000;
             background: url('iqama.webp') no-repeat center center;
             background-size: cover;
             flex-direction: column; justify-content: flex-end; align-items: center; text-align: center;
-            padding-bottom: 10vh; /* Pousse les éléments vers le bas sur le Mihrab */
+            padding-bottom: 10vh;
         }
         #txt-iqama-title { 
             color: var(--gold); 
@@ -87,7 +98,7 @@
         }
         #iqama-btn-skip:active { transform: scale(0.95); }
 
-        /* --- PRAYER PAGE (SUIVI ADAPTÉ PORTRAIT) --- */
+        /* --- PRAYER PAGE (PORTRAIT OPTIMISÉ) --- */
         #prayer-screen { display: none; position: fixed; inset: 0; background: var(--black); z-index: 3000; }
         #ui-layer { 
             position: absolute; inset: 0; 
@@ -96,14 +107,12 @@
             z-index: 3001; pointer-events: none; 
             padding-top: 60px; padding-bottom: 2vh; 
         }
-        /* Taille du compteur diminuée pour l'affichage vertical */
-        .rakat-display { font-size: 18vh; font-weight: bold; color: var(--gold); line-height: 1.1; margin: 0; }
+        .rakat-display { font-size: 16vh; font-weight: bold; color: var(--gold); line-height: 1.1; margin: 0; }
         .sujud-dots { font-size: 5vh; margin: 1vh 0; }
         #liturgy-label { font-size: 4.5vh; color: var(--white); text-align: center; font-weight: bold; min-height: 6vh; text-shadow: 0 0 15px var(--gold); padding: 0 10px; }
         
         #touch-layer { position: absolute; inset: 0; z-index: 3010; cursor: pointer; }
         
-        /* Bouton retour rabaissé et centré en bas */
         .btn-back { 
             position: absolute; bottom: 4vh; left: 50%; transform: translateX(-50%); 
             z-index: 3020; background: rgba(34, 34, 34, 0.8); border: 1px solid var(--gold); 
@@ -145,6 +154,8 @@
         </div>
 
         <table class="prayer-table" id="p-list"></table>
+        
+        <div id="txt-mwl-disclaimer" class="mwl-disclaimer"></div>
     </div>
 
     <div id="iqama-screen">
@@ -171,12 +182,12 @@
 
     <script>
         const i18n = {
-            ar: { names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "الإقامة", rakat: "ركعات", back: "رجوع", skip: "بدء الآن", adhan: "أذان", adhanSub: "اضغط للإيقاف", isteghfar: "رَبِّ اغْفِرْ لِي", takbir: "اللهُ أَكْبَر", tachahod: "التَّشَهُّدّ", final: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة" },
-            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", rakat: "Rakats", back: "RETOUR", skip: "commencer", adhan: "Adhan", adhanSub: "Appuyez pour arrêter", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahoud: "Tachahoud", final: "Tachahoud Final" },
-            tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahoud: "Teşehhüd", final: "Son Teşehhüd" },
-            ur: { names: ["فجر", "ظهر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے تچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahoud: "تشہد", final: "تشہد اور درود ابراہیمی" },
-            id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk untuk berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahoud: "Tahiyyat awal", final: "Tahiyyat Akhir" },
-            bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", adhanSub: "বন্ধ করতে স্পর্শ করুন", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahoud: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদে ইব্রাহিম" }
+            ar: { names: ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"], iqama: "الإقامة", rakat: "ركعات", back: "رجوع", skip: "بدء الآن", adhan: "أذان", adhanSub: "اضغط للإيقاف", isteghfar: "رَبِّ اغْفِرْ لِي", takbir: "اللهُ أَكْبَر", tachahod: "التَّشَهُّدّ", final: "التَّشَهُّدُّ وَالصَّلَاةُ الإِبْرَاهِيمِيَّة", mwl: "يتم حساب المواقيت وفقًا لطريقة الحساب القياسية لرابطة العالم الإسلامي لضمان مواقيت عالمية متسقة." },
+            fr: { names: ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"], iqama: "Iqama", rakat: "Rakats", back: "RETOUR", skip: "commencer", adhan: "Adhan", adhanSub: "Appuyez pour arrêter", isteghfar: "Rabbi ghfir li", takbir: "Allahu Akbar", tachahoud: "Tachahoud", final: "Tachahoud Final", mwl: "Les horaires sont calculés selon la méthode standard de la Ligue Islamique Mondiale pour des horaires globaux cohérents." },
+            tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahoud: "Teşehhüd", final: "Son Teşehhüd", mwl: "Namaz vakitleri, küresel tutarlılık sağlamak amacıyla Müslüman Dünya Ligi (Rابطة العالم الإسلامي) standart hesaplama yöntemine göre hesaplanmaktadır." },
+            ur: { names: ["فجر", "ظهر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے تچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahoud: "تشہد", final: "تشہد اور درود ابراہیمی", mwl: "اوقات کی صلاۃ کا حساب رابطہ عالم اسلامی کے معیاری طریقہ کار کے مطابق کیا گیا ہے تاکہ عالمی سطح پر یکسانیت رہے" },
+            id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk untuk berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahoud: "Tahiyyat awal", final: "Tahiyyat Akhir", mwl: "Waktu shalat dihitung menggunakan metode standar Liga Dunia Muslim (MWL) untuk konsistensi global." },
+            bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", adhanSub: "বন্ধ করতে স্পর্শ করুন", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahoud: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদে ইব্রাহিম", mwl: "বৈশ্বিক সামঞ্জস্য বজায় রাখার জন্য মুসলিম ওয়ার্ল্ড লিগের (MWL) আদর্শ পদ্ধতি অনুযায়ী নামাযের সময়সূচী গণনা করা হয়েছে।" }
         };
 
         let currentLang = localStorage.getItem('Adhan&Sujud_lang') || 'ar';
@@ -221,6 +232,7 @@
             document.getElementById('txt-back-btn').innerText = t.back;
             document.getElementById('txt-adhan-title').innerText = t.adhan;
             document.getElementById('txt-adhan-sub').innerText = t.adhanSub;
+            document.getElementById('txt-mwl-disclaimer').innerText = t.mwl;
             renderTable();
         }
 
@@ -255,4 +267,147 @@
             applyTranslations();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    pos => fetchAPI(pos
+                    pos => fetchAPI(pos.coords.latitude, pos.coords.longitude),
+                    () => fetchAPIByIP()
+                );
+            } else { fetchAPIByIP(); }
+        }
+
+        async function fetchAPIByIP() {
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                fetchAPI(data.latitude || 36.8065, data.longitude || 10.1815);
+            } catch (e) { fetchAPI(36.8065, 10.1815); }
+        }
+
+        async function fetchAPI(lat, lon) {
+            try {
+                const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=3`);
+                const data = await res.json();
+                prayerTimes = data.data.timings;
+                renderTable();
+                initQibla(lat, lon);
+            } catch (e) { renderTable(); }
+        }
+
+        function initQibla(lat, lon) {
+            const latK = 21.4225 * Math.PI / 180;
+            const lonK = 39.8262 * Math.PI / 180;
+            const phi = lat * Math.PI / 180;
+            const L = lon * Math.PI / 180;
+            const y = Math.sin(lonK - L);
+            const x = Math.cos(phi) * Math.tan(latK) - Math.sin(phi) * Math.cos(lonK - L);
+            state.qibla = Math.atan2(y, x) * 180 / Math.PI;
+            document.getElementById('qibla-box').style.opacity = "1";
+            const eventType = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
+            window.addEventListener(eventType, handleOrientation, true);
+        }
+
+        function handleOrientation(e) {
+            let compass = e.webkitCompassHeading || e.alpha;
+            if (compass !== null) {
+                let heading = e.webkitCompassHeading ? compass : (360 - compass);
+                let rugRotation = state.qibla - heading;
+                document.getElementById('prayer-rug').style.transform = `rotate(${rugRotation}deg)`;
+            }
+        }
+
+        function startIqama(name, r) {
+            Object.values(sounds).forEach(s => {
+                s.play().then(() => s.pause()).catch(() => {});
+            });
+
+            state.totalR = r;
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('iqama-screen').style.display = 'flex';
+            document.getElementById('p-name-active').innerText = name;
+            
+            setTimeout(() => { playSound('iqama'); }, 100);
+            sounds.iqama.onended = () => launch();
+        }
+
+        function skipIqama() { sounds.iqama.pause(); launch(); }
+
+        function launch() {
+            document.getElementById('iqama-screen').style.display = 'none';
+            document.getElementById('prayer-screen').style.display = 'block';
+            state.isPraying = true; state.currR = 1; state.currS = 0;
+            document.getElementById('total-r').innerText = state.totalR;
+            updateUI();
+        }
+
+        document.getElementById('touch-layer').addEventListener('touchstart', e => {
+            e.preventDefault();
+            const now = Date.now();
+            if (now - state.lastT < 1200) return;
+            state.lastT = now;
+            
+            state.currS++;
+            const t = i18n[currentLang] || i18n.ar;
+            
+            if (state.currS === 1) {
+                playSound('isteghfar');
+                document.getElementById('liturgy-label').innerText = t.isteghfar;
+                document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
+            } else if (state.currS === 2) {
+                document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
+                const isFinal = (state.currR === state.totalR);
+                if (isFinal) {
+                    playSound('tachahod2');
+                    document.getElementById('liturgy-label').innerText = t.final;
+                    setTimeout(() => stopPrayer(), 8000);
+                } else {
+                    const isEven = (state.currR % 2 === 0);
+                    if (isEven) {
+                        playSound('tachahod');
+                        document.getElementById('liturgy-label').innerText = t.tachahoud;
+                    } else {
+                        playSound('takbir');
+                    }
+                    setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
+                }
+            }
+        });
+
+        function updateUI() {
+            document.getElementById('curr-r').innerText = state.currR;
+            document.getElementById('sujud-dots').innerHTML = "⚪ ⚪";
+            document.getElementById('liturgy-label').innerText = "";
+        }
+
+        function stopPrayer() {
+            state.isPraying = false;
+            Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; });
+            document.getElementById('prayer-screen').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'flex';
+        }
+
+        function checkAdhan() {
+            if (state.isPraying || !prayerTimes) return;
+            const now = new Date();
+            const cur = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => {
+                if (prayerTimes[k] === cur && state.lastAdhan !== cur && adhanSettings[k]) {
+                    state.lastAdhan = cur;
+                    document.getElementById('adhan-screen').style.display = 'flex';
+                    playSound('adhan');
+                }
+            });
+        }
+
+        function stopAdhanAlert() {
+            sounds.adhan.pause();
+            document.getElementById('adhan-screen').style.display = 'none';
+        }
+
+        window.onload = () => {
+            initGeo();
+            setInterval(checkAdhan, 30000);
+            document.body.addEventListener('click', () => { 
+                Object.values(sounds).forEach(s => { s.play().then(()=>s.pause()).catch(()=>{}) });
+            }, {once: true});
+        };
+    </script>
+</body>
+</html>
