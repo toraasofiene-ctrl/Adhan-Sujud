@@ -57,7 +57,6 @@
         .p-time { color: var(--gold); font-size: 1rem; font-family: monospace; }
         .vol-btn { font-size: 1.6rem; cursor: pointer; width: 50px; }
 
-        /* Style pour la note de calcul de la Ligue Islamique Mondiale */
         .mwl-disclaimer {
             font-size: 0.75rem;
             color: rgba(255, 255, 255, 0.6);
@@ -187,13 +186,14 @@
             tr: { names: ["Sabah", "Öğle", "İkindi", "Akşam", "Yatsı"], iqama: "Kamet", rakat: "Rekat", back: "GERİ", skip: "Başlat", adhan: "Ezan", adhanSub: "Durdurmak için dokun", isteghfar: "Rabbim beni bağışla", takbir: "Allahu Ekber", tachahoud: "Teşehhüd", final: "Son Teşehhüd", mwl: "Namaz vakitleri, küresel tutarlılık sağlamak amacıyla Müslüman Dünya Ligi (Rابطة العالم الإسلامي) standart hesaplama yöntemine göre hesaplanmaktadır." },
             ur: { names: ["فجر", "ظهر", "عصر", "مغرب", "عشاء"], iqama: "اقامت", rakat: "رکعت", back: "واپس", skip: "شروع کریں", adhan: "اذان", adhanSub: "بند کرنے کے لیے تچ کریں", isteghfar: "رب اغفر لي", takbir: "اللہ اکبر", tachahoud: "تشہد", final: "تشہد اور درود ابراہیمی", mwl: "اوقات کی صلاۃ کا حساب رابطہ عالم اسلامی کے معیاری طریقہ کار کے مطابق کیا گیا ہے تاکہ عالمی سطح پر یکسانیت رہے" },
             id: { names: ["Subuh", "Zuhur", "Ashar", "Maghrib", "Isya"], iqama: "Iqama", rakat: "Rakaat", back: "KEMBALI", skip: "Mulai", adhan: "Adzan", adhanSub: "Ketuk untuk berhenti", isteghfar: "Robbighfirlii", takbir: "Allahu Akbar", tachahoud: "Tahiyyat awal", final: "Tahiyyat Akhir", mwl: "Waktu shalat dihitung menggunakan metode standar Liga Dunia Muslim (MWL) untuk konsistensi global." },
-            bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", adhanSub: "বন্ধ করতে স্পর্শ করুন", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahoud: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদে ইব্রাহিম", mwl: "বৈশ্বিক সামঞ্জস্য বজায় রাখার জন্য মুসলিম ওয়ার্ল্ড লিগের (MWL) আদর্শ পদ্ধতি অনুযায়ী নামাযের সময়সূচী গণনা করা হয়েছে।" }
+            bn: { names: ["ফজর", "যোহর", "আসর", "মাগরিব", "এশা"], iqama: "একামত", rakat: "রাকাত", back: "ফিরে যান", skip: "শুরু করুন", adhan: "আযান", adhanSub: "বন্ধ করতে স্পর্শ করুন", isteghfar: "রব্বিগফিরলি", takbir: "আল্লাহু আকবার", tachahoud: "তাশাহহুদ", final: "তাশাহহুদ ও দুরুদে ইব্রাহিম", mwl: "বৈশ্বিক সামঞ্জস্য বজায় রাখার জন্য মুসলিম ওয়ার্ল্ড লিগের (MWL) আদেশ পদ্ধতি অনুযায়ী নামাযের সময়সূচী গণনা করা হয়েছে।" }
         };
 
         let currentLang = localStorage.getItem('Adhan&Sujud_lang') || 'ar';
         let prayerTimes = null;
         let state = { isPraying: false, currR: 1, totalR: 0, currS: 0, lastT: 0, qibla: 0, lastAdhan: "" };
         let adhanSettings = JSON.parse(localStorage.getItem('Adhan&Sujud_vol')) || { Fajr: true, Dhuhr: true, Asr: true, Maghrib: true, Isha: true };
+        let audioTimeout = null; // Stocke l'ID du timer pour pouvoir l'annuler si besoin
 
         const sounds = {
             iqama: new Audio('iqama.mp3'), 
@@ -211,6 +211,14 @@
                 s.currentTime = 0;
                 s.play().catch(e => console.log("Erreur audio", key));
             }
+        }
+
+        // Joue un son avec un retard spécifique (en millisecondes)
+        function playSoundWithDelay(key, delay) {
+            if (audioTimeout) clearTimeout(audioTimeout);
+            audioTimeout = setTimeout(() => {
+                playSound(key);
+            }, delay);
         }
 
         function toggleLang() {
@@ -347,25 +355,28 @@
             const t = i18n[currentLang] || i18n.ar;
             
             if (state.currS === 1) {
-                playSound('isteghfar');
+                // Application du délai de 3 secondes (3000ms) pour le premier soujoud
+                playSoundWithDelay('isteghfar', 3000);
                 document.getElementById('liturgy-label').innerText = t.isteghfar;
                 document.getElementById('sujud-dots').innerHTML = "🟢 ⚪";
             } else if (state.currS === 2) {
                 document.getElementById('sujud-dots').innerHTML = "🟢 🟢";
                 const isFinal = (state.currR === state.totalR);
                 if (isFinal) {
-                    playSound('tachahod2');
+                    // Application du délai de 3 secondes pour le tachahoud final
+                    playSoundWithDelay('tachahod2', 3000);
                     document.getElementById('liturgy-label').innerText = t.final;
-                    setTimeout(() => stopPrayer(), 8000);
+                    setTimeout(() => stopPrayer(), 11000); // 3s de délai + 8s d'affichage
                 } else {
                     const isEven = (state.currR % 2 === 0);
                     if (isEven) {
-                        playSound('tachahod');
-                        document.getElementById('liturgy-label').innerText = t.tachahoud;
+                        playSoundWithDelay('tachahod', 3000);
+                        document.getElementById('liturgy-label').innerText = t.textachahoud || t.tachahod;
                     } else {
-                        playSound('takbir');
+                        playSoundWithDelay('takbir', 3000);
                     }
-                    setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 2500);
+                    // Le passage à la rakat suivante attend la fin du délai (3s) + le temps de lecture
+                    setTimeout(() => { state.currR++; state.currS = 0; updateUI(); }, 5500);
                 }
             }
         });
@@ -378,6 +389,7 @@
 
         function stopPrayer() {
             state.isPraying = false;
+            if (audioTimeout) clearTimeout(audioTimeout); // Annule tout son en attente de lecture
             Object.values(sounds).forEach(s => { s.pause(); s.currentTime = 0; });
             document.getElementById('prayer-screen').style.display = 'none';
             document.getElementById('home-screen').style.display = 'flex';
