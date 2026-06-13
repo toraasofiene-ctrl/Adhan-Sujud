@@ -400,7 +400,7 @@
             document.getElementById('home-screen').style.display = 'flex';
         }
 
-        function checkAdhan() {
+      function checkAdhan() {
             if (state.isPraying || !prayerTimes) return;
             const now = new Date();
             const cur = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -409,6 +409,14 @@
                     state.lastAdhan = cur;
                     document.getElementById('adhan-screen').style.display = 'flex';
                     playSound('adhan');
+
+                    // --- ENVOI DE LA NOTIFICATION NATIVE AU TÉLÉPHONE ---
+                    if (window.AndroidInterface) {
+                        window.AndroidInterface.triggerAdhanNotification(
+                            "C'est l'heure de l'Adhan", 
+                            "Prière du " + k
+                        );
+                    }
                 }
             });
         }
